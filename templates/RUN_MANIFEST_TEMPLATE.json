@@ -1,0 +1,44 @@
+{
+  "run_id": "charmmgui_<builder>_<YYYYMMDD_HHMMSS>_<mode>",
+  "mode": "dry_run | test_only_not_for_production | production",
+  "created_at": "<ISO8601>",
+  "operator": "Codex/Firday",
+  "target": {
+    "protein": "",
+    "ligand": "",
+    "builder": "PDB Reader | Ligand Reader | Membrane Builder | Solution Builder",
+    "intended_engine": "GROMACS"
+  },
+  "inputs": {
+    "original_pdb": "",
+    "cleaned_pdb": "",
+    "ligand_sdf": "",
+    "do_not_modify": []
+  },
+  "charmmgui": {
+    "jobid": "",
+    "project": "",
+    "current_step": "",
+    "submitted": false,
+    "downloaded_package": "",
+    "download_state": "not_requested",
+    "backend_complete": false,
+    "archive_verified": false,
+    "package_validated": false
+  },
+  "risk_gates": {
+    "cgenff_param_penalty": null,
+    "cgenff_charge_penalty": null,
+    "production_blocked": true,
+    "production_blocked_reason": "",
+    "custom_ligand_injection_verified": false,
+    "strict_grompp_passed": false
+  },
+  "reports": {
+    "pdb_audit": "",
+    "ligand_audit": "",
+    "parameter_audit": "",
+    "final_validation": "",
+    "cleanup_manifest": ""
+  }
+}

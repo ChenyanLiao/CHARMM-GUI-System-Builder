@@ -1,0 +1,334 @@
+---
+name: charmm-gui-system-builder
+description: Build, recover, and validate auditable CHARMM-GUI PDB Reader, Ligand Reader, Membrane Builder, Solution Builder, and GROMACS workflows. Use for transmembrane protein-ligand systems, segmented proteins, custom CGenFF/ffTK parameters, slow or stale CHARMM-GUI jobs, authenticated final-package downloads, HTML-disguised archive failures, and strict pre-MD package checks. Default to dry_run or Candidate_Not_For_MD and block production until scientific and expert gates pass.
+---
+
+# CHARMM-GUI System Builder
+
+## Authorship And Provenance
+
+- Original author and project founder: **Liao Chenyan**.
+- Canonical repository:
+  `https://github.com/ChenyanLiao/CHARMM-GUI-System-Builder`.
+- License: GNU Affero General Public License v3.0.
+- Origin ID: `io.github.ChenyanLiao.charmm-gui-system-builder`.
+
+This is an unofficial community project. It is not affiliated with or endorsed
+by the CHARMM-GUI team, Im Lab, or Lehigh University. Preserve the reasonable
+authorship and provenance notices described in `NOTICE` and
+`ADDITIONAL_TERMS.md`. Modified versions must identify themselves as modified
+and must not be represented as canonical releases.
+
+## Version
+
+Use the V6 workflow. V6 separates page completion, backend completion, browser
+transfer state,
+archive acquisition, package validation, custom-parameter injection, strict
+GROMACS preprocessing, and production approval. Never collapse these gates into
+one success claim.
+
+## Load The Relevant References
+
+- Read [continuous_execution.md](references/continuous_execution.md) before an
+  unattended browser run or a resumed job.
+- Read
+  [browser_form_and_download_recovery.md](references/browser_form_and_download_recovery.md)
+  before changing dynamic form controls, handling a native save panel, or
+  recovering a download.
+- Search [known_failure_modes.md](examples/known_failure_modes.md) by job ID,
+  step, or error excerpt before retrying a failed step.
+- Use the matching checklist under `checklists/` before each irreversible page
+  submission and before declaring a package valid.
+
+## Enforce The Safety Boundary
+
+- Never record, print, save, copy, or inspect passwords, cookies, session
+  tokens, JWTs, CSRF values, browser credentials, CAPTCHA responses, or MFA
+  codes.
+- Reuse an already authenticated browser session. Keep login, MFA, CAPTCHA,
+  Touch ID, and OS-password confirmation as human actions.
+- Never hard-code credentials or place them in screenshots, JSON snapshots,
+  reports, command history, environment files, skills, or examples.
+- Do not bypass anti-automation controls or fabricate unsupported API requests.
+- Do not run production MD or `gmx mdrun` unless the project owner separately
+  authorizes the exact action.
+- Do not use `gmx grompp -maxwarn` to turn a warning into a pass.
+- Treat `param penalty > 50`, unresolved protonation, unverified custom
+  parameters, bad protein segmentation, or missing expert approval as
+  production blockers.
+- Preserve original PDB, SDF/MOL2, parameter files, and downloaded archives.
+  Work in a timestamped run directory.
+
+## Use Precise Status Vocabulary
+
+Report the narrowest status supported by evidence:
+
+| Status | Required evidence |
+|---|---|
+| `Candidate_Not_For_MD` | Input or website workflow exists, but one or more technical/scientific gates remain open. |
+| `Builder_Backend_Complete_Package_Unverified` | Final backend output terminated normally, but no real final archive has passed inspection. |
+| `Candidate_Package_Validated` | A real archive lists successfully and contains the required GROMACS payload and components. |
+| `Technical_Pass_Not_Production_Approval` | Package, custom-parameter injection, and strict `grompp` gates pass; scientific approvals may remain open. |
+| `Production_Approved` | Every staged approval is explicit and `production_allowed: true`. |
+
+Never call a visible `download.tgz` link, a Step 6 page, or
+`step5_input.out NORMAL TERMINATION` a validated GROMACS package.
+
+## Follow The Evidence Hierarchy
+
+Use independent evidence layers:
+
+1. Immutable local input manifests, hashes, and input audits.
+2. CHARMM-GUI backend step files and their termination markers.
+3. A locally saved archive that is proven to be a tar/tar.gz and not HTML.
+4. Parsed GROMACS files, topology components, and custom-ligand payload.
+5. Strict `gmx grompp` without `-maxwarn`.
+6. Explicit scientific and production approvals.
+
+Use backend files over a stale running banner. Use archive contents over a
+filename or page link. Use strict preprocessing over a superficial file count.
+Do not infer a higher layer from a lower one.
+
+## Prepare And Freeze Inputs
+
+Create a timestamped run directory and copy only required inputs. Record source
+paths, sizes, hashes, mode, intended builder, and do-not-modify paths in a run
+manifest.
+
+Audit the input PDB before upload:
+
+1. Record chains, segment boundaries, residue ranges, ATOM/HETATM counts,
+   altlocs, missing coordinates, duplicate atoms, waters, ions, cofactors, and
+   non-standard residues.
+2. Keep the intended protein, ligand, and explicitly justified key ions.
+3. Remove old bulk water, old bulk ions, and unrelated ligands only in a new
+   cleaned copy.
+4. Preserve ligand coordinates, atom order, stereochemistry, formal charge,
+   residue name, and chemical identity.
+5. Never overwrite the original PDB.
+
+For proteins with large unresolved sequence gaps, prepare explicit segments.
+Do not let CHARMM-GUI bond across a large gap as one continuous protein
+segment. Run `build_segmented_submission_pdb.py` and
+`audit_submission_pdb.py`, then block upload if any coordinate, TER boundary,
+ligand-name, or key-ion invariant fails.
+
+For a representative nine-segment channel, use `PROA` through `PROI`, but take
+the residue ranges from the reviewed project profile. Never reuse segment
+boundaries from an unrelated target.
+
+## Validate Ligand And Custom Parameters
+
+Audit each SDF/MOL2 for explicit hydrogen count, heavy-atom count, total atom
+count, bond orders, formal charge, atom names/order, and residue name.
+
+- Treat automatic CGenFF as compatible in principle with CHARMM36 protein,
+  lipid, and water, not as proof of parameter quality.
+- Block production when `param penalty > 50`; review high charge penalties and
+  protonation separately.
+- Freeze approved or optimized RTF, PRM, optional STR, validation ITP, changed-term TSV,
+  provenance manifest, and hashes before opening CHARMM-GUI.
+- Upload custom RTF/PRM only through a website-supported control. Do not emulate
+  support through hidden-field edits or fabricated requests.
+- Stop if the website offers only a fresh automatic CGenFF route.
+- Keep `custom_ligand_verified=false` until the final downloaded package passes
+  `verify_custom_ligand_injection.py`. A Step 1 log that merely appends a PRM is
+  insufficient. A final package may validly contain `lig.rtf + lig.prm` without
+  a standalone `lig.str`; verify the GROMACS conversion through function-9
+  connectivity in `LIG.itp` and converted dihedral values in
+  `toppar/forcefield.itp`.
+
+## Use The Correct Builder And Scientific Defaults
+
+Use `Input Generator -> Membrane Builder -> Protein/Membrane System` for a
+transmembrane protein. Do not substitute Solution Builder or an ordinary water
+box.
+
+For a large eukaryotic channel candidate build, use the reviewed project
+profile rather than memory. A common initial profile is:
+
+- CHARMM36m/CHARMM36 protein and CHARMM36 lipid;
+- approved custom ligand parameters, or CGenFF only for test-only work;
+- TIP3P water;
+- symmetric POPC:cholesterol 70:30 leaflets;
+- 0.15 M NaCl with `SOD`/`CLA`;
+- GROMACS output;
+- later semi-isotropic pressure coupling.
+
+Treat PPM/OPM orientation as a review gate. Require `step2_orient.pdb`, nonzero
+plausible top/bottom areas, a sensible protein Z span, and preserved ligand
+pose/internal geometry. Stop on empty PPM output, zero top/bottom area, or an
+unreviewed fallback to `Use PDB orientation`.
+
+## Mutate Browser Forms Surgically
+
+Use the existing authenticated Chrome profile. Use native computer control only
+for macOS upload/save panels that the browser interface cannot handle.
+
+Before every submission:
+
+1. Confirm the exact job ID, project, step, URL, and page title.
+2. Capture a screenshot and a redacted parameter JSON.
+3. Record visible controls, selected values, warnings, intended action, and
+   safe hidden scientific fields. Exclude every credential/auth/session field.
+4. Change only the controls that differ from the approved project profile.
+5. After each dependency-changing control, re-read all dependent fields.
+6. Capture the final pre-submit state and click the intended action once.
+7. Record the post-submit URL and set the submitted-action lock immediately.
+
+Do not re-select an already selected force field just to “confirm” it; CHARMM-GUI
+can reset dynamically generated controls. Do not treat a preview/calculation as
+a submission. For system size, require nonzero lipid counts before submitting.
+For final input generation, verify the actual GROMACS checkbox state; visible
+text is not enough.
+
+## Enforce Step Gates
+
+Run `verify_step_gate.py` where applicable and apply these gates:
+
+| Stage | Required gate before advancing |
+|---|---|
+| PDB Reader | `step1_pdbreader.out` normal and PDB/PSF/CRD products present. |
+| Orientation | Oriented PDB plus area evidence; human/scientific review recorded. |
+| System size | `step3_size.str` or documented equivalent; intended lipid counts recorded. |
+| Packing | `step3_packing_head.psf` and `.crd` present; no fatal marker. |
+| Components/solvent/ions | Lipid, waterbox, and ion outputs normal; visible and backend ion identities agree. |
+| Assembly | `step5_assembly.psf`, `.crd`, and `.pdb` present; output normal. |
+| Input generation | `step5_input.out` contains normal termination and no fatal marker. |
+| Download | Saved artifact passes `inspect_charmmgui_download.py`; HTML is a failed download. |
+| Package | `.gro/.top/.itp/.mdp`, `topol.top`, ligand, protein, lipid, water, and ions validate. |
+| Custom ligand | Frozen custom payload and required changed terms match the final package. |
+| GROMACS preflight | Strict `gmx grompp` passes without `-maxwarn`; segmentation remains valid. |
+
+Without both packing head files, never enter Step 4. Without all assembly files,
+never submit final input generation.
+
+## Maintain V6 Run State
+
+Create `RUN_STATE.json` from `templates/RUN_STATE_TEMPLATE.json`. Keep these
+axes independent:
+
+- `auth_state`: authentication state;
+- `browser_state`: connection/native-dialog state;
+- `page_state`: visible page state;
+- `backend_state`: backend scientific state;
+- `download_state`: artifact acquisition state;
+- `closure_gates`: archive, package, custom ligand, and strict preprocessing.
+
+Use `classify_charmmgui_state.py` after every page observation or backend probe.
+Use `continuation_guard.py` before yielding. Exit code `20` means continue; it
+is not a failed test.
+
+Treat backend values beginning with `complete` as backend-complete, but do not
+set `workflow_complete` until the archive and package closure gates pass. For a
+custom ligand, also require custom injection verification. A false completion
+flag must not override failed V6 closure gates.
+
+## Recover Without Duplicate Submission
+
+For `ERR_EMPTY_RESPONSE`, timeout, stale page, or controller disconnection:
+
+1. Preserve job ID, exact submitted action, timestamp, resume URL, and artifact
+   evidence.
+2. Do not repeat the click merely because navigation failed.
+3. Probe the expected backend output at a low frequency.
+4. If the backend grows, wait. If it finishes normally, reopen the same job by
+   bookmark or Job Retriever and continue from the next gate.
+5. Retry transient page recovery at most three times with increasing cooldown.
+6. Stop on fatal output or a documented stall; never silently start a new job.
+
+Use 10-30 minute checks for ordinary running steps and 30-60 minute checks for
+packing, assembly, or input generation. Record size, tail digest, required
+products, and whether progress changed. Two unchanged checks with missing
+required products support a stalled classification.
+
+## Acquire And Validate The Final Archive
+
+Treat final download as a separate state transition:
+
+1. Record page/backend completion independently from browser transfer state.
+2. Open the authenticated final page for the exact job.
+3. Click the download link once. In Chrome, resume only the newest interrupted
+   download record; do not click the webpage link again and create duplicates.
+4. After repeated Chrome transport failures, reopen the same completed job in
+   Safari. Do not rerun Step 5/6 or start a new job.
+5. Safari may automatically expand `download.tgz` into `charmm-gui.tar`.
+   Browser-reported transfer size, suffix, and on-disk size are not equivalent.
+6. Save to the run download directory, or finish in the default Downloads
+   directory and move the artifact only after its real type is validated.
+7. Record the browser source path, destination, size, timestamp, and SHA-256.
+8. Run `inspect_charmmgui_download.py` before `tar`, extraction, package
+   validation, or custom-injection validation.
+9. If the file is HTML, a login page, zero/truncated data, partial, or non-tar,
+   set `download_state=invalid_html` or `invalid_artifact`. Preserve it as
+   evidence and re-download from the same authenticated job; do not rebuild.
+10. Accept `.tar`, `.tar.gz`, or `.tgz` based on content, not suffix. Detect
+    compression programmatically; never choose `tar -tf` versus `tar -tzf`
+    from the filename alone.
+11. Reject unsafe member paths, links, special files, corrupt archives,
+    intermediates without GROMACS payload, and `.crdownload`/partial files.
+12. Never expose or save HTML response contents because they may contain account
+   context; record only classification, size, hash, and safe indicators.
+
+A final page can be complete while the local download is invalid. Report this
+as `Builder_Backend_Complete_Package_Unverified`.
+
+## Validate The Package And Technical Preflight
+
+Run, in order:
+
+1. `inspect_charmmgui_download.py`;
+2. `validate_charmmgui_package.py`;
+3. `verify_custom_ligand_injection.py` when custom parameters are expected;
+4. component and charge/lipid/ion summaries;
+5. strict `gmx grompp` on copied/preflight inputs, never `gmx mdrun`.
+
+Check archive readability, member path safety, `.gro/.top/.itp/.mdp`,
+`topol.top`, protein, ligand, lipids, TIP3/water, intended ions, ligand total charge, lipid ratio,
+semi-isotropic pressure-coupling settings, and CHARMM warnings. Preserve
+original MDP files before any edits.
+
+For custom GROMACS ligand parameters, do not require byte-for-byte equality
+between the frozen validation ITP and the final package ITP. Verify atom names,
+order, types, charges, and function-9 atom-index connectivity in `LIG.itp`;
+then match every changed term against `[ dihedraltypes ]` in
+`toppar/forcefield.itp`. Convert CHARMM kcal/mol to GROMACS kJ/mol using 4.184,
+allow forward/reverse atom-type order, and compare phases modulo 360 degrees.
+Absence of `lig.str` is non-blocking when `lig.rtf`, `lig.prm`, and the converted
+GROMACS parameter payload all pass.
+
+Do not promote a package that fails `grompp` because of cross-gap bonds. Repair
+the segment strategy and regenerate the CHARMM-GUI package instead of using
+`-maxwarn`.
+
+## Apply Staged Approval
+
+Use `templates/STAGED_APPROVAL_TEMPLATE.yaml` and leave every unapproved item
+false.
+
+1. Pre-submit approval: ligand state, optimized candidate, segmentation,
+   missing-residue strategy, key ions, and membrane composition.
+2. Orientation approval: only after oriented coordinates and membrane placement
+   are reviewed.
+3. Final technical approval: only after real archive, package, custom injection,
+   and strict preprocessing gates pass.
+4. Production approval: only when an authorized expert explicitly sets
+   `production_allowed: true`.
+
+Even a technical pass is not binding-site evidence. A starting pose and one
+membrane build do not prove the real binding site.
+
+## Hand Off To Another Agent Safely
+
+Provide the exact job ID, step, resume URL, one allowed action, forbidden
+actions, artifact gate, screenshot/JSON requirement, wait interval, and stop
+conditions. Never provide credentials. Require the other agent to preserve the
+submitted-action lock and production blockers.
+
+## Maintain The Skill
+
+Before updating this skill, make a complete timestamped backup. Record new
+failure modes in `examples/known_failure_modes.md` and new cases in
+`examples/case_index.md`. Do not store credentials, browser state, cookies,
+tokens, or authentication HTML. Validate scripts, unit tests, positive/negative
+archive fixtures, and the skill folder before considering an update complete.
