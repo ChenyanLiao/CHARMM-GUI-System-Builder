@@ -132,3 +132,28 @@
 - Root cause: CHARMM-GUI stored the accepted custom input as `lig.rtf + lig.prm`; GROMACS kept function-9 connectivity in `LIG.itp` and converted parameter values in `toppar/forcefield.itp [ dihedraltypes ]`.
 - Recovery action: verify RTF/PRM identity, LIG atom order/types/charges, function-9 connectivity, and all converted dihedraltypes using kcal/mol x 4.184, forward/reverse type matching, and phase modulo 360. Job 9000000004 then passed 46/46 changed terms, 5/5 primary terms, and 3/3 target connections.
 - Reusable: yes.
+
+## 2026-07-18 - cross-agent client loads skill but lacks runtime capability
+
+- Step: runtime initialization before any CHARMM-GUI website action.
+- Error excerpt: the client discovered `SKILL.md`, but no authenticated browser,
+  screenshot/page-state capture, download control, or native-dialog capability
+  was available.
+- Root cause: Agent Skills compatibility proves instruction discovery, not
+  workstation, browser-session, or OS-dialog access.
+- Recovery action: run the adapter capability handshake. Continue local audits
+  when file/Python access exists, hand browser-only actions to the operator, and
+  mark unavailable evidence as unknown. Never invent tool calls or claim that
+  the website action occurred.
+- Reusable: yes.
+
+## 2026-07-18 - platform-specific copies drift from the scientific core
+
+- Step: skill maintenance and cross-agent distribution.
+- Error excerpt: a platform-specific copy contained different gates or stale
+  status vocabulary from the canonical `SKILL.md`.
+- Root cause: duplicating the full workflow per client created divergent
+  scientific behavior.
+- Recovery action: keep one core `SKILL.md`; place only tool/path mappings in
+  `adapters/`. Validate all adapters and version metadata in CI before release.
+- Reusable: yes.

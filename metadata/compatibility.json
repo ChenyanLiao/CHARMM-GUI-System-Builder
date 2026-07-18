@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "skill": {
+    "name": "charmm-gui-system-builder",
+    "version": "1.1.0",
+    "standard": "https://agentskills.io/specification",
+    "canonical_repository": "https://github.com/ChenyanLiao/CHARMM-GUI-System-Builder"
+  },
+  "core_requirements": {
+    "python": ">=3.10",
+    "production_ready_default": false,
+    "no_mdrun": true,
+    "human_authentication_required": true
+  },
+  "platforms": {
+    "codex": {
+      "status": "supported_capability_gated",
+      "install_root": "~/.codex/skills/charmm-gui-system-builder",
+      "adapter": "adapters/codex.md"
+    },
+    "claude_code": {
+      "status": "supported_external_browser_required",
+      "install_root": "~/.claude/skills/charmm-gui-system-builder",
+      "adapter": "adapters/claude-code.md"
+    },
+    "openclaw": {
+      "status": "supported_capability_gated",
+      "install_root": "workspace_or_managed_skill_root",
+      "adapter": "adapters/openclaw.md"
+    },
+    "hermes": {
+      "status": "supported_capability_gated",
+      "install_root": "~/.hermes/skills/charmm-gui-system-builder",
+      "adapter": "adapters/hermes.md"
+    },
+    "generic_agent_skills": {
+      "status": "instruction_and_local_validation",
+      "install_root": "client_specific",
+      "adapter": "adapters/generic-agent-skills.md"
+    }
+  }
+}

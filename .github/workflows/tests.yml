@@ -22,4 +22,23 @@ jobs:
         run: python -m compileall -q scripts
       - name: Run unit tests
         run: python -m unittest discover -s scripts/tests -p 'test_*.py' -v
+      - name: Validate cross-agent skill package
+        run: python scripts/validate_skill_package.py .
 
+  agent-skills-spec:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install pinned Agent Skills reference validator
+        run: >-
+          python -m pip install
+          'git+https://github.com/agentskills/agentskills.git@38a2ff82958afee88dadf4831509e6f7e9d8ef4e#subdirectory=skills-ref'
+      - name: Validate canonical lowercase skill directory
+        run: |
+          skill_root="$(mktemp -d)/charmm-gui-system-builder"
+          mkdir -p "$skill_root"
+          git archive HEAD | tar -x -C "$skill_root"
+          skills-ref validate "$skill_root"
