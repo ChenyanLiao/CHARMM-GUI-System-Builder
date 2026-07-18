@@ -1,0 +1,12 @@
+ligand_charge_approved: false
+ligand_cgenff_penalty_approved_or_optimized: false
+charge_penalty_approved: false
+missing_residue_strategy_approved: false
+segment_strategy_approved: false
+key_ion_strategy_approved: false
+membrane_composition_approved: false
+membrane_orientation_approved: false
+production_allowed: false
+expert_name: ""
+approval_date: ""
+notes: ""

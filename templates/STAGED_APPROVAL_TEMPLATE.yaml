@@ -1,0 +1,23 @@
+pre_submit:
+  ligand_charge_and_protonation_approved: false
+  optimized_ligand_candidate_approved: false
+  segment_strategy_approved: false
+  missing_residue_strategy_approved: false
+  key_ion_strategy_approved: false
+  membrane_composition_plan_approved: false
+orientation:
+  step2_orient_file_reviewed: false
+  membrane_orientation_approved: false
+final_technical:
+  final_download_is_real_archive: false
+  archive_contains_required_gromacs_payload: false
+  custom_ligand_injection_5_of_5: false
+  full_changed_parameter_payload_verified: false
+  package_validation_passed: false
+  strict_grompp_passed: false
+production_allowed: false
+expert_name: ""
+approval_date: ""
+notes: >-
+  Candidate_Not_For_MD and test_only_not_for_production until every required
+  item is explicitly approved. No approval is inferred from file generation.

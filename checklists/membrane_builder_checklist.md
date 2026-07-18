@@ -1,0 +1,21 @@
+# Membrane Builder Checklist
+
+- [ ] Builder is Protein/Membrane System.
+- [ ] Ordinary water box was not used as final membrane system.
+- [ ] PDB Reader output inspected.
+- [ ] Ligand retained.
+- [ ] Key ions retained or removed by explicit decision.
+- [ ] Orientation method recorded.
+- [ ] `step2_orient.pdb` inspected.
+- [ ] Top/bottom area checked.
+- [ ] Protein Z range checked.
+- [ ] Lipid option recorded.
+- [ ] POPC/CHOL or other composition recorded.
+- [ ] Leaflet symmetry/asymmetry recorded.
+- [ ] Salt type recorded.
+- [ ] SOD/CLA vs POT/CLA checked.
+- [ ] Ion concentration recorded.
+- [ ] `step3_packing_head.psf` exists before Step 4.
+- [ ] `step3_packing_head.crd` exists before Step 4.
+- [ ] `step5_assembly.psf/crd/pdb` exist before Step 6.
+- [ ] Step 5 GROMACS checkbox verified from DOM/accessibility state.
