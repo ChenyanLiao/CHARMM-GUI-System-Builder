@@ -13,6 +13,10 @@ These scripts are read-only with respect to CHARMM-GUI packages and job outputs.
 - `audit_submission_pdb.py`: prove segment ranges, TER boundaries, coordinates, ligand naming, key-ion retention, and absence of old solvent/unrelated hetero residues.
 - `verify_step_gate.py`: verify local products required before advancing a CHARMM-GUI page.
 - `verify_custom_ligand_injection.py`: compare a downloaded package against frozen optimized RTF/PRM/optional STR/ITP and changed-term provenance. It validates function-9 connectivity in `LIG.itp` plus converted `[ dihedraltypes ]` in `forcefield.itp` rather than requiring ITP text identity.
+- `validate_skill_package.py`: validate Agent Skills frontmatter, canonical
+  metadata/version consistency, required cross-agent adapters and docs, local
+  links, and the 500-line progressive-disclosure limit without modifying the
+  skill.
 
 ## Rules
 
@@ -39,6 +43,9 @@ python3 scripts/verify_custom_ligand_injection.py \
   --frozen-dir /path/to/00_Inputs/Ligand \
   --package /path/to/archive \
   --output /path/to/custom_ligand_validation
+
+python3 scripts/validate_skill_package.py /path/to/skill \
+  --json-out /path/to/skill_validation.json
 ```
 
 Do not infer compression from the suffix. Safari can save a normal POSIX tar
