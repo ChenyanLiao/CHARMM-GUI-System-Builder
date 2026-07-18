@@ -1,0 +1,41 @@
+project_name: ""
+target: ""
+mode: Candidate_Not_For_MD
+builder: Protein/Membrane System
+inputs:
+  original_pdb: ""
+  segmented_pdb: ""
+  topology_aligned_ligand_pdb: ""
+  submission_pdb: ""
+  ligand_sdf: ""
+  ligand_mol2: ""
+  optimized_rtf: ""
+  optimized_prm: ""
+  optimized_str: ""
+  validation_itp: ""
+  changed_terms: ""
+  frozen_parameter_sha256: ""
+protein_segments: []
+ligand:
+  residue_name: LIG
+  formal_charge: 1
+  custom_parameters_required: true
+key_ions: []
+membrane:
+  lipid_ratio: "POPC:CHOL=70:30"
+  symmetric_leaflets: true
+  water: TIP3P
+  salt: "0.15 M NaCl"
+  cation: SOD
+  anion: CLA
+output:
+  engine: GROMACS
+  later_pressure_coupling: semi-isotropic
+validation:
+  require_real_archive: true
+  require_custom_injection_match: true
+  require_strict_grompp: true
+status:
+  candidate_not_for_md: true
+  production_ready: false
+  no_mdrun: true

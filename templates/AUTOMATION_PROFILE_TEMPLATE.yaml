@@ -1,0 +1,67 @@
+profile: unattended_candidate
+continuous_execution:
+  schema_version: 6
+  enabled: true
+  consume_ready_routine_action_immediately: true
+  keep_task_alive_during_backend_wait: true
+  continuation_guard: scripts/continuation_guard.py
+  must_continue_exit_code: 20
+  valid_yield_states:
+    - human_authentication
+    - human_scientific_review
+    - fatal
+    - stalled
+    - workflow_complete
+browser:
+  preferred_surface: chrome_existing_profile
+  reuse_authenticated_session: true
+  create_separate_profile: false
+login:
+  default_mode: manual
+  allow_native_password_autofill_click: false
+  allow_submit_after_native_autofill: false
+  authorization_destination: https://www.charmm-gui.org/
+  never_capture_login_screenshot: true
+  handoff_required_for:
+    - touch_id
+    - os_password
+    - captcha
+    - mfa
+polling:
+  ordinary_seconds: [600, 900, 1800]
+  large_step_seconds: [1800, 2700, 3600]
+  transient_network_seconds: [300, 600, 1200]
+  unchanged_missing_product_limit: 2
+  transient_failure_limit: 3
+evidence:
+  full_capture_on_submission: true
+  full_capture_on_error: true
+  full_capture_on_human_gate: true
+  compact_json_for_unchanged_poll: true
+download:
+  separate_from_backend_completion: true
+  page_backend_transfer_states_are_independent: true
+  resume_latest_browser_record_only: true
+  do_not_reclick_webpage_link_after_interrupt: true
+  allow_safari_fallback_without_rebuild: true
+  safari_may_auto_expand_tgz_to_tar: true
+  trust_content_not_suffix_or_browser_size: true
+  inspect_before_tar_or_extraction: true
+  reject_html_disguised_as_archive: true
+  reject_partial_or_crdownload: true
+  reject_unsafe_archive_members: true
+  preserve_invalid_artifact_hash_and_size_only: true
+  require_authenticated_same_job_redownload: true
+human_gates:
+  - login_or_authentication
+  - membrane_orientation
+  - custom_parameter_ambiguity
+  - unexpected_scientific_default
+  - fatal_or_stalled
+  - production_approval
+safety:
+  candidate_not_for_md: true
+  production_ready: false
+  no_mdrun: true
+  no_maxwarn: true
+  no_credential_storage: true

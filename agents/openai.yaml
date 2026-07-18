@@ -1,0 +1,4 @@
+interface:
+  display_name: "CHARMM-GUI System Builder"
+  short_description: "Build, recover, and validate CHARMM-GUI systems"
+  default_prompt: "Use $charmm-gui-system-builder to build, recover, or validate this CHARMM-GUI workflow without skipping browser-transfer, package, custom-parameter, GROMACS, or scientific approval gates."

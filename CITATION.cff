@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the canonical project and original author."
+title: "CHARMM-GUI System Builder"
+type: software
+authors:
+  - family-names: "Liao"
+    given-names: "Chenyan"
+version: "6.0.0"
+date-released: 2026-07-18
+repository-code: "https://github.com/ChenyanLiao/CHARMM-GUI-System-Builder"
+url: "https://github.com/ChenyanLiao/CHARMM-GUI-System-Builder"
+license: "AGPL-3.0-only"
+keywords:
+  - CHARMM-GUI
+  - GROMACS
+  - molecular dynamics
+  - membrane protein
+  - force field validation
+
