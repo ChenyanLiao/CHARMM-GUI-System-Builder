@@ -2,8 +2,8 @@
 
 ## 1.1.0 - 2026-07-18
 
-- Resets the public project version to the intended `1.1.0` SemVer sequence;
-  the historical `v6.1.0` tag remains available for provenance.
+- Establishes `v1.1.0` as the Cross-Agent Edition following the initial
+  `v1.0.0` release.
 
 - Adds Cross-Agent Edition adapters for Codex, Claude Code, OpenClaw, Hermes
   Agent, and generic Agent Skills clients while retaining one core `SKILL.md`.
@@ -13,7 +13,7 @@
   compatibility metadata, and cross-agent regression tests.
 - Adds official `skills-ref` validation to CI using a pinned upstream revision.
 
-## 6.0.0 - 2026-07-18
+## 1.0.0 - 2026-07-18
 
 - Initial public release.
 - Separates backend, page, download, archive, package, custom-parameter,
