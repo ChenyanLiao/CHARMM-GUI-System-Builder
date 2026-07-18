@@ -3,7 +3,7 @@
 Install a pinned release directly into the Hermes skill root:
 
 ```bash
-git clone --branch v6.1.0 --depth 1 \
+git clone --branch v1.1.0 --depth 1 \
   https://github.com/ChenyanLiao/CHARMM-GUI-System-Builder.git \
   ~/.hermes/skills/charmm-gui-system-builder
 ```

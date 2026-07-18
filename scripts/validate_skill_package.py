@@ -13,7 +13,7 @@ from typing import Any
 
 
 CANONICAL_NAME = "charmm-gui-system-builder"
-EXPECTED_VERSION = "6.1.0"
+EXPECTED_VERSION = "1.1.0"
 ALLOWED_FIELDS = {
     "name",
     "description",

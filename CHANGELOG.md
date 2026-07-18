@@ -1,6 +1,9 @@
 # Changelog
 
-## 6.1.0 - 2026-07-18
+## 1.1.0 - 2026-07-18
+
+- Resets the public project version to the intended `1.1.0` SemVer sequence;
+  the historical `v6.1.0` tag remains available for provenance.
 
 - Adds Cross-Agent Edition adapters for Codex, Claude Code, OpenClaw, Hermes
   Agent, and generic Agent Skills clients while retaining one core `SKILL.md`.

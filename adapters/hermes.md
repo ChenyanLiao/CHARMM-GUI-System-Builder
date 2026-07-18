@@ -18,4 +18,4 @@ directory through Hermes `skills.external_dirs`.
 
 Hermes can update writable skills. Install a release copy or make a shared
 external directory read-only when reproducibility matters; do not allow an
-agent-managed edit to silently replace the canonical v6.1.0 workflow.
+agent-managed edit to silently replace the canonical v1.1.0 workflow.
