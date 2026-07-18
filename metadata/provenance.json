@@ -1,10 +1,11 @@
 {
   "project": "CHARMM-GUI System Builder",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "original_author": "Liao Chenyan",
   "canonical_repository": "https://github.com/ChenyanLiao/CHARMM-GUI-System-Builder",
   "origin_id": "io.github.ChenyanLiao.charmm-gui-system-builder",
   "copyright": "Copyright (C) 2026 Liao Chenyan",
   "license": "AGPL-3.0-only",
+  "distribution": "Cross-Agent Edition",
   "unofficial_project": true
 }

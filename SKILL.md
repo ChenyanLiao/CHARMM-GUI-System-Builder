@@ -1,6 +1,13 @@
 ---
 name: charmm-gui-system-builder
 description: Build, recover, and validate auditable CHARMM-GUI PDB Reader, Ligand Reader, Membrane Builder, Solution Builder, and GROMACS workflows. Use for transmembrane protein-ligand systems, segmented proteins, custom CGenFF/ffTK parameters, slow or stale CHARMM-GUI jobs, authenticated final-package downloads, HTML-disguised archive failures, and strict pre-MD package checks. Default to dry_run or Candidate_Not_For_MD and block production until scientific and expert gates pass.
+license: AGPL-3.0-only
+compatibility: Agent Skills compatible. Bundled validators require Python 3.10+. Interactive CHARMM-GUI work requires terminal and file access plus an authenticated browser path that can capture page state and downloads; human login, MFA, CAPTCHA, and native-dialog fallback remain operator actions.
+metadata:
+  author: Liao Chenyan
+  version: "6.1.0"
+  canonical_repository: https://github.com/ChenyanLiao/CHARMM-GUI-System-Builder
+  origin_id: io.github.ChenyanLiao.charmm-gui-system-builder
 ---
 
 # CHARMM-GUI System Builder
@@ -21,11 +28,29 @@ and must not be represented as canonical releases.
 
 ## Version
 
-Use the V6 workflow. V6 separates page completion, backend completion, browser
-transfer state,
+Use the V6.1 Cross-Agent distribution of the V6 workflow. V6 separates page
+completion, backend completion, browser transfer state,
 archive acquisition, package validation, custom-parameter injection, strict
 GROMACS preprocessing, and production approval. Never collapse these gates into
-one success claim.
+one success claim. V6.1 keeps one scientific core and moves runtime-specific
+tool instructions into adapters; do not fork the core procedure per agent.
+
+## Select A Runtime Adapter
+
+Read exactly one runtime adapter before using browser or terminal tools:
+
+- [Codex](adapters/codex.md)
+- [Claude Code](adapters/claude-code.md)
+- [OpenClaw](adapters/openclaw.md)
+- [Hermes Agent](adapters/hermes.md)
+- [Generic Agent Skills client](adapters/generic-agent-skills.md)
+
+Before acting, record whether the runtime has file read/write, local command
+execution, an authenticated browser path, screenshot/page-state capture,
+download control, and native-dialog handling. Missing browser capabilities do
+not block local audits and archive validation, but they do block autonomous
+website submission. Fall back to a redacted operator checklist instead of
+inventing tool names or claiming an action occurred.
 
 ## Load The Relevant References
 
@@ -162,8 +187,10 @@ unreviewed fallback to `Use PDB orientation`.
 
 ## Mutate Browser Forms Surgically
 
-Use the existing authenticated Chrome profile. Use native computer control only
-for macOS upload/save panels that the browser interface cannot handle.
+Use an existing authenticated browser session supported by the selected runtime
+adapter. Keep authentication human-controlled. Use native computer control only
+when the adapter explicitly provides it and the browser interface cannot handle
+an upload or save panel; otherwise stop for an operator action.
 
 Before every submission:
 
@@ -248,10 +275,13 @@ Treat final download as a separate state transition:
 
 1. Record page/backend completion independently from browser transfer state.
 2. Open the authenticated final page for the exact job.
-3. Click the download link once. In Chrome, resume only the newest interrupted
-   download record; do not click the webpage link again and create duplicates.
-4. After repeated Chrome transport failures, reopen the same completed job in
-   Safari. Do not rerun Step 5/6 or start a new job.
+3. Click the download link once. On the macOS Chrome path, resume only the
+   newest interrupted download record; do not click the webpage link again and
+   create duplicates.
+4. When the selected adapter supports Safari, repeated Chrome transport failures
+   may be recovered by reopening the same completed job in Safari. Otherwise
+   hand the exact same-job download action to the operator. Do not rerun Step
+   5/6 or start a new job.
 5. Safari may automatically expand `download.tgz` into `charmm-gui.tar`.
    Browser-reported transfer size, suffix, and on-disk size are not equivalent.
 6. Save to the run download directory, or finish in the default Downloads
@@ -327,8 +357,11 @@ submitted-action lock and production blockers.
 
 ## Maintain The Skill
 
-Before updating this skill, make a complete timestamped backup. Record new
+Before updating this skill, make a complete timestamped backup. Keep the core
+`SKILL.md` platform-neutral and update adapters instead of creating divergent
+platform copies. Record new
 failure modes in `examples/known_failure_modes.md` and new cases in
 `examples/case_index.md`. Do not store credentials, browser state, cookies,
 tokens, or authentication HTML. Validate scripts, unit tests, positive/negative
-archive fixtures, and the skill folder before considering an update complete.
+archive fixtures, `scripts/validate_skill_package.py`, and the official
+`skills-ref` validator before considering an update complete.

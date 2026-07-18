@@ -15,9 +15,14 @@ Contributions are welcome through GitHub issues and pull requests.
    ```bash
    python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
    python3 -m compileall -q scripts
+   python3 scripts/validate_skill_package.py .
    ```
 
-5. Explain the evidence, failure mode, recovery behavior, and remaining
+5. Keep platform-specific tool names in `adapters/` and installation details in
+   `docs/`. Do not fork the scientific workflow into platform-specific copies
+   of `SKILL.md`.
+
+6. Explain the evidence, failure mode, recovery behavior, and remaining
    scientific limits in the pull request.
 
 ## Licensing
@@ -30,4 +35,3 @@ yours unless a separate written agreement says otherwise.
 Large changes may require a separate contributor license agreement before
 merge. No contributor agreement may be inferred from private credentials or
 unpublished scientific data.
-

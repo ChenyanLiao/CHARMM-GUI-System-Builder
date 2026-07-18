@@ -22,4 +22,6 @@ Security reports are especially relevant for:
 - command injection through file paths or archive members;
 - false production approval or execution of `gmx mdrun`;
 - automation that bypasses human authentication gates.
-
+- cross-agent handoffs that copy credentials, sessions, or authenticated HTML;
+- clients that claim browser/file actions despite missing runtime capabilities;
+- writable shared skill roots that permit silent workflow drift.
