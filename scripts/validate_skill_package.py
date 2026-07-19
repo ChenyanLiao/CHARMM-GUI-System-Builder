@@ -13,7 +13,7 @@ from typing import Any
 
 
 CANONICAL_NAME = "charmm-gui-system-builder"
-EXPECTED_VERSION = "1.1.0"
+EXPECTED_VERSION = "1.1.1"
 ALLOWED_FIELDS = {
     "name",
     "description",
@@ -121,6 +121,20 @@ def _local_markdown_links(text: str) -> list[str]:
     return links
 
 
+def _read_optional_json(
+    path: Path,
+    label: str,
+    errors: list[str],
+) -> tuple[bool, Any]:
+    if not path.is_file():
+        return False, None
+    try:
+        return True, json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        errors.append(f"invalid {label}: {exc}")
+        return False, None
+
+
 def validate_skill(root: Path, strict_directory_name: bool = False) -> dict[str, Any]:
     root = root.expanduser().resolve()
     errors: list[str] = []
@@ -199,40 +213,35 @@ def validate_skill(root: Path, strict_directory_name: bool = False) -> dict[str,
         if not (root / target).exists():
             errors.append(f"broken local SKILL.md link: {target}")
 
-    compatibility_path = root / "metadata/compatibility.json"
-    if compatibility_path.is_file():
-        try:
-            compatibility_data = json.loads(
-                compatibility_path.read_text(encoding="utf-8")
+    compatibility_loaded, compatibility_data = _read_optional_json(
+        root / "metadata/compatibility.json",
+        "metadata/compatibility.json",
+        errors,
+    )
+    if compatibility_loaded:
+        skill = compatibility_data.get("skill", {})
+        if skill.get("name") != CANONICAL_NAME:
+            errors.append("compatibility metadata skill name is inconsistent")
+        if skill.get("version") != EXPECTED_VERSION:
+            errors.append("compatibility metadata version is inconsistent")
+        platforms = set(compatibility_data.get("platforms", {}))
+        if platforms != REQUIRED_PLATFORMS:
+            errors.append(
+                "compatibility metadata platforms differ from the required set"
             )
-        except (OSError, UnicodeError, json.JSONDecodeError) as exc:
-            errors.append(f"invalid metadata/compatibility.json: {exc}")
-        else:
-            skill = compatibility_data.get("skill", {})
-            if skill.get("name") != CANONICAL_NAME:
-                errors.append("compatibility metadata skill name is inconsistent")
-            if skill.get("version") != EXPECTED_VERSION:
-                errors.append("compatibility metadata version is inconsistent")
-            platforms = set(compatibility_data.get("platforms", {}))
-            if platforms != REQUIRED_PLATFORMS:
-                errors.append(
-                    "compatibility metadata platforms differ from the required set"
-                )
-            requirements = compatibility_data.get("core_requirements", {})
-            if requirements.get("production_ready_default") is not False:
-                errors.append("production_ready_default must remain false")
-            if requirements.get("no_mdrun") is not True:
-                errors.append("no_mdrun must remain true")
+        requirements = compatibility_data.get("core_requirements", {})
+        if requirements.get("production_ready_default") is not False:
+            errors.append("production_ready_default must remain false")
+        if requirements.get("no_mdrun") is not True:
+            errors.append("no_mdrun must remain true")
 
-    provenance_path = root / "metadata/provenance.json"
-    if provenance_path.is_file():
-        try:
-            provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
-        except (OSError, UnicodeError, json.JSONDecodeError) as exc:
-            errors.append(f"invalid metadata/provenance.json: {exc}")
-        else:
-            if provenance.get("version") != EXPECTED_VERSION:
-                errors.append("provenance version is inconsistent")
+    provenance_loaded, provenance = _read_optional_json(
+        root / "metadata/provenance.json",
+        "metadata/provenance.json",
+        errors,
+    )
+    if provenance_loaded and provenance.get("version") != EXPECTED_VERSION:
+        errors.append("provenance version is inconsistent")
 
     cff_path = root / "CITATION.cff"
     if cff_path.is_file():

@@ -81,6 +81,30 @@ class CrossAgentSkillPackageTests(unittest.TestCase):
         self.assertNotIn("platforms", frontmatter)
         self.assertNotIn("allowed-tools", frontmatter)
 
+    def test_invalid_optional_metadata_json_is_reported(self):
+        for relative in (
+            "metadata/compatibility.json",
+            "metadata/provenance.json",
+        ):
+            with (
+                self.subTest(relative=relative),
+                tempfile.TemporaryDirectory() as temp,
+            ):
+                destination = Path(temp) / CANONICAL_NAME
+                shutil.copytree(
+                    ROOT,
+                    destination,
+                    ignore=shutil.ignore_patterns(".git", "__pycache__", "*.pyc"),
+                )
+                (destination / relative).write_text("{")
+                report = validate_skill(destination)
+
+            self.assertEqual(report["status"], "fail")
+            self.assertTrue(
+                any(error.startswith(f"invalid {relative}:") for error in report["errors"]),
+                report["errors"],
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
