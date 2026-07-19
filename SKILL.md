@@ -5,7 +5,7 @@ license: AGPL-3.0-only
 compatibility: Agent Skills compatible. Bundled validators require Python 3.10+. Interactive CHARMM-GUI work requires terminal and file access plus an authenticated browser path that can capture page state and downloads; human login, MFA, CAPTCHA, and native-dialog fallback remain operator actions.
 metadata:
   author: Liao Chenyan
-  version: "1.1.0"
+  version: "1.1.1"
   canonical_repository: https://github.com/ChenyanLiao/CHARMM-GUI-System-Builder
   origin_id: io.github.ChenyanLiao.charmm-gui-system-builder
 ---
@@ -28,11 +28,11 @@ and must not be represented as canonical releases.
 
 ## Version
 
-Use release 1.1.0 Cross-Agent Edition of the V6 workflow. V6 separates page
+Use release 1.1.1 Cross-Agent Edition of the V6 workflow. V6 separates page
 completion, backend completion, browser transfer state,
 archive acquisition, package validation, custom-parameter injection, strict
 GROMACS preprocessing, and production approval. Never collapse these gates into
-one success claim. Release 1.1.0 keeps one scientific core and moves
+one success claim. Release 1.1.1 keeps one scientific core and moves
 runtime-specific tool instructions into adapters; do not fork the core
 procedure per agent.
 

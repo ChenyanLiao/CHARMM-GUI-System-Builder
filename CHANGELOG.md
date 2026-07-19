@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.1 - 2026-07-20
+
+- Consolidates duplicate optional JSON metadata loading in the Skill package
+  validator without changing its public output or validation behavior.
+- Adds regression coverage for malformed compatibility and provenance JSON.
+- Keeps all scientific gates unchanged, including `production_ready=false`
+  and `no_mdrun=true`.
+
 ## 1.1.0 - 2026-07-18
 
 - Establishes `v1.1.0` as the Cross-Agent Edition following the initial

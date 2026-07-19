@@ -2,7 +2,7 @@
 
 An auditable cross-agent skill and read-only validation toolkit for CHARMM-GUI
 PDB Reader, Ligand Reader, Membrane Builder, Solution Builder, and GROMACS
-package workflows. Version 1.1.0 uses one Agent Skills-compatible core with
+package workflows. Version 1.1.1 uses one Agent Skills-compatible core with
 small runtime adapters for Codex, Claude Code, OpenClaw, Hermes Agent, and
 generic Agent Skills clients.
 
@@ -78,7 +78,7 @@ skill documentation.
 Quick Codex install:
 
 ```bash
-git clone --branch v1.1.0 --depth 1 \
+git clone --branch v1.1.1 --depth 1 \
   https://github.com/ChenyanLiao/CHARMM-GUI-System-Builder.git \
   ~/.codex/skills/charmm-gui-system-builder
 ```
