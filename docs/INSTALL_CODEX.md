@@ -5,7 +5,7 @@
 Back up an existing installation before replacing it. For a fresh install:
 
 ```bash
-git clone --branch v1.1.1 --depth 1 \
+git clone --branch v2.1.0 --depth 1 \
   https://github.com/ChenyanLiao/CHARMM-GUI-System-Builder.git \
   ~/.codex/skills/charmm-gui-system-builder
 ```

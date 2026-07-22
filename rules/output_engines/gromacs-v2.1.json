@@ -1,0 +1,140 @@
+{
+  "schema_version": "2.1",
+  "module": "gromacs",
+  "parameters": [
+    {
+      "parameter_id": "output.gromacs_enabled",
+      "module": "gromacs",
+      "page_or_step": "input_generation",
+      "value_type": "boolean",
+      "available_options": [true],
+      "default": true,
+      "risk_level": "Routine",
+      "recommendation_reason": "The requested output engine checkbox must be selected."
+    },
+    {
+      "parameter_id": "gromacs.ensemble",
+      "module": "gromacs",
+      "page_or_step": "input_generation",
+      "value_type": "enum",
+      "available_options": ["NPT", "NVT", "reviewed_other"],
+      "default": "NPT",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Membrane equilibration normally requires pressure coupling, but the project protocol governs."
+    },
+    {
+      "parameter_id": "gromacs.temperature_k",
+      "module": "gromacs",
+      "page_or_step": "input_generation",
+      "value_type": "number",
+      "available_options": [],
+      "default": 303.15,
+      "risk_level": "Contextual",
+      "recommendation_reason": "Use the intended experimental or simulation temperature.",
+      "evidence": [
+        {"source": "user_experimental_condition", "path": "run_request.experimental_conditions.temperature_k", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "gromacs.pressure_coupling",
+      "module": "gromacs",
+      "page_or_step": "post_generation_review",
+      "value_type": "enum",
+      "available_options": ["semi-isotropic", "isotropic", "reviewed_other"],
+      "default": "semi-isotropic",
+      "risk_level": "Routine",
+      "recommendation_reason": "Use semi-isotropic coupling for a membrane system.",
+      "applies_if": {"path": "run_request.builder", "in": ["membrane_builder", "quick_bilayer"]}
+    },
+    {
+      "parameter_id": "gromacs.hydrogen_mass_repartitioning",
+      "module": "gromacs",
+      "page_or_step": "input_generation",
+      "value_type": "boolean",
+      "available_options": [false, true],
+      "default": false,
+      "risk_level": "Routine",
+      "recommendation_reason": "Do not enable HMR without an approved integration protocol."
+    },
+    {
+      "parameter_id": "gromacs.multisite_ca2",
+      "module": "gromacs",
+      "page_or_step": "input_generation",
+      "value_type": "boolean",
+      "available_options": [false, true],
+      "default": false,
+      "risk_level": "Contextual",
+      "recommendation_reason": "Enable multi-site Ca2+ only with explicit expert approval."
+    },
+    {
+      "parameter_id": "gromacs.pme_fft_grid",
+      "module": "gromacs",
+      "page_or_step": "input_generation",
+      "value_type": "enum",
+      "available_options": ["automatic", "manual_reviewed"],
+      "default": "automatic",
+      "risk_level": "Routine",
+      "recommendation_reason": "Use automatic grid generation unless a reviewed protocol specifies exact dimensions."
+    },
+    {
+      "parameter_id": "gromacs.surface_tension",
+      "module": "gromacs",
+      "page_or_step": "input_generation",
+      "value_type": "number",
+      "available_options": [],
+      "default": 0,
+      "risk_level": "Contextual",
+      "recommendation_reason": "Use zero surface tension for the standard membrane NPT setup unless the protocol states otherwise."
+    },
+    {
+      "parameter_id": "input_generation.more_charmm_minimization",
+      "module": "gromacs",
+      "page_or_step": "input_generation",
+      "value_type": "boolean",
+      "available_options": [true, false],
+      "default": true,
+      "risk_level": "Routine",
+      "recommendation_reason": "Keep additional CHARMM minimization enabled for conservative input generation."
+    },
+    {
+      "parameter_id": "input_generation.wyf_cation_pi",
+      "module": "gromacs",
+      "page_or_step": "input_generation",
+      "value_type": "boolean",
+      "available_options": [false, true],
+      "default": false,
+      "risk_level": "Contextual",
+      "recommendation_reason": "Do not enable the optional WYF cation-pi model without a reviewed protocol."
+    },
+    {
+      "parameter_id": "output.other_engines_disabled",
+      "module": "gromacs",
+      "page_or_step": "input_generation",
+      "value_type": "boolean",
+      "available_options": [true],
+      "default": true,
+      "risk_level": "Routine",
+      "recommendation_reason": "When GROMACS is requested alone, verify that unrelated engine checkboxes remain unselected."
+    },
+    {
+      "parameter_id": "gromacs.strict_grompp_no_maxwarn",
+      "module": "gromacs",
+      "page_or_step": "validation",
+      "value_type": "boolean",
+      "available_options": [true],
+      "default": true,
+      "risk_level": "Routine",
+      "recommendation_reason": "Warnings cannot be hidden to obtain a pass."
+    },
+    {
+      "parameter_id": "gromacs.no_mdrun",
+      "module": "gromacs",
+      "page_or_step": "validation",
+      "value_type": "boolean",
+      "available_options": [true],
+      "default": true,
+      "risk_level": "Routine",
+      "recommendation_reason": "System Builder does not run MD."
+    }
+  ]
+}

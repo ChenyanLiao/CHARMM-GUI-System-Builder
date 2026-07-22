@@ -1,6 +1,9 @@
 # GROMACS Package Validation Checklist
 
 - [ ] Archive exists.
+- [ ] Locked build contract hash recorded and verified.
+- [ ] Expected components, segments, ligand name, and ligand charge are derived
+      from the contract rather than a remembered case profile.
 - [ ] Page completion, backend completion, and browser transfer state are recorded separately.
 - [ ] Interrupted Chrome transfer was resumed from the newest download record; the webpage link was not clicked repeatedly.
 - [ ] If Safari was used, possible automatic `.tgz` to `.tar` expansion is recorded.
@@ -33,6 +36,9 @@
 - [ ] `step5_input.out` normal termination checked.
 - [ ] Warnings recorded.
 - [ ] Production status explicitly stated.
+- [ ] Package validator status is at most `Candidate_Package_Validated`; do not
+  claim `Technical_Pass_Not_Production_Approval` until strict `grompp` and any
+  applicable custom-ligand gate also pass.
 - [ ] Backend completion and package validation are reported as separate gates.
 - [ ] Strict `gmx grompp` checked without `-maxwarn`.
 - [ ] Large protein sequence gaps checked for accidental continuous segment bonding.

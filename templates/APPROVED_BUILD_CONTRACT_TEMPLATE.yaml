@@ -1,0 +1,31 @@
+{
+  "schema_version": "2.1",
+  "contract_state": "draft",
+  "revision": 1,
+  "run_id": "",
+  "target_id": "",
+  "builder": "",
+  "mode": "dry_run",
+  "inputs": [],
+  "parameters": {},
+  "decision_records": [],
+  "active_modules": [],
+  "temporary_assumptions": [],
+  "production_blockers": [],
+  "module_maturity": {},
+  "capability_id": "",
+  "execution_route": "",
+  "route_maturity": "",
+  "expected_output": {
+    "components": [],
+    "protein_segments": [],
+    "ligand": {
+      "required": false,
+      "residue_name": "LIG",
+      "formal_charge": null
+    }
+  },
+  "credential_provider_ref": "",
+  "production_ready": false,
+  "no_mdrun": true
+}

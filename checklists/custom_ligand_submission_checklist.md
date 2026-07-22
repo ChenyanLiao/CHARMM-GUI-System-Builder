@@ -2,6 +2,8 @@
 
 ## Frozen inputs
 
+- [ ] Locked build contract records ligand identity, residue name, formal
+      charge, parameter source, input hashes, and expected final component.
 - [ ] SDF/MOL2 identity, atom order, and formal charge are audited.
 - [ ] Optimized RTF, PRM, optional STR, validation ITP, changed-term table, and
       provenance file are copied into the run without modifying sources.
@@ -10,6 +12,8 @@
 
 ## Website submission
 
+- [ ] Route is audited browser unless an official capability is documented in
+      the registry; no captured hidden endpoint is replayed.
 - [ ] The website exposes an explicit custom topology/parameter upload route.
 - [ ] SDF is used for structure recognition only.
 - [ ] Optimized RTF/PRM, or the explicitly supported equivalent STR, is loaded.

@@ -1,0 +1,14 @@
+{
+  "schema_version": "2.1",
+  "run_id": "",
+  "active_modules": [],
+  "decisions": [],
+  "contract_parameters": {},
+  "pending_decisions": [],
+  "guided_questions": [],
+  "next_guided_question": null,
+  "temporary_assumptions": [],
+  "ready_to_lock": false,
+  "production_ready": false,
+  "no_mdrun": true
+}

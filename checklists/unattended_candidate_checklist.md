@@ -2,7 +2,11 @@
 
 ## Continuous execution
 
-- [ ] `RUN_STATE.json` uses schema version 5.
+- [ ] `RUN_STATE.json` uses schema version `2.1`.
+- [ ] A locked `APPROVED_BUILD_CONTRACT.json` hash is recorded.
+- [ ] Every side-effecting action is within a valid, unexpired authorization.
+- [ ] Credential storage, if enabled, uses only an opaque OS-vault reference.
+- [ ] API tokens are memory-only and login evidence capture is disabled.
 - [ ] `next_allowed_action` is either allowlisted or explicitly treated as a human gate.
 - [ ] A ready routine action is executed immediately rather than reported as waiting.
 - [ ] The active task remains alive during low-frequency backend polling.
@@ -13,7 +17,10 @@
 - [ ] Candidate/test-only mode is explicit.
 - [ ] Existing authenticated Chrome profile is selected.
 - [ ] Job ID and resumable URL are recorded before waiting.
-- [ ] `next_clicked` is updated immediately after the single submission.
+- [ ] `submission_state` and submission count are updated immediately after the
+      single submission.
+- [ ] A lost side-effecting response becomes `submission_uncertain`, not an
+      automatic retry.
 - [ ] Authentication, browser, page, and backend states are recorded separately.
 - [ ] Download state and closure gates are recorded separately from backend state.
 - [ ] Required products for the current step are listed in `RUN_STATE.json`.

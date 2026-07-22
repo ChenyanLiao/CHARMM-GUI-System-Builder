@@ -8,7 +8,13 @@ directory through Hermes `skills.external_dirs`.
 
 ## Tool Mapping
 
-- Use terminal and file toolsets for manifests and bundled validators.
+Fill the run-local runtime capability manifest first, especially when Hermes is
+running on a Linux/VPS host rather than the workstation holding the inputs.
+
+- Use terminal and file toolsets for parameter inventory, build contracts,
+  manifests, and bundled validators.
+- Use the official API client only for registry-backed capabilities and only
+  after contract and authorization verification.
 - Use browser tools only when the active Hermes profile exposes them and they
   can retain the operator-authenticated CHARMM-GUI session.
 - A Linux/VPS Hermes runtime has no macOS Safari or native Finder save panel.
@@ -18,4 +24,4 @@ directory through Hermes `skills.external_dirs`.
 
 Hermes can update writable skills. Install a release copy or make a shared
 external directory read-only when reproducibility matters; do not allow an
-agent-managed edit to silently replace the canonical v1.1.1 workflow.
+agent-managed edit to silently replace the canonical v2.1.0 workflow.

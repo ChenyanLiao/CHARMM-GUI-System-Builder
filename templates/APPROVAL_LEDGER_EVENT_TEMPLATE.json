@@ -1,0 +1,14 @@
+{
+  "schema_version": "2.1",
+  "timestamp": "",
+  "stage": "initial_contract",
+  "actor": "",
+  "approval_origin": "",
+  "authorization_assurance": "",
+  "contract_sha256": "",
+  "evidence_sha256": [],
+  "decision": "",
+  "scope": [],
+  "production_ready": false,
+  "no_mdrun": true
+}

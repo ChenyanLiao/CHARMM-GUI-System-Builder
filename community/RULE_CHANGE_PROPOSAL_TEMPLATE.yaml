@@ -1,0 +1,17 @@
+{
+  "schema_version": "2.1",
+  "proposal_id": "",
+  "affected_module": "",
+  "affected_parameter_id": "",
+  "current_rule_version": "",
+  "proposed_behavior": "",
+  "scientific_rationale": "",
+  "validation_report_ids": [],
+  "backward_compatibility": "",
+  "new_tests_required": [],
+  "security_or_safety_effect": "",
+  "maintainer_decision": "pending",
+  "applies_to_existing_locked_contracts": false,
+  "production_ready": false,
+  "no_mdrun": true
+}

@@ -1,6 +1,7 @@
 # Failure Recovery Checklist
 
 - [ ] Record jobid.
+- [ ] Record build-contract hash, execution route, and module maturity.
 - [ ] Record step.
 - [ ] Save screenshot.
 - [ ] Save page HTML/DOM or parameter JSON if possible.
@@ -9,6 +10,8 @@
 - [ ] Check whether current output file is growing.
 - [ ] Check last 50-100 lines of output.
 - [ ] Do not repeatedly click `Next`.
+- [ ] If a POST may have succeeded without returning a job ID, set
+      `submission_uncertain` and inspect existing-job evidence before retrying.
 - [ ] Do not use fallback GET as proof of valid submission.
 - [ ] Use Job Retriever if browser state is lost.
 - [ ] Classify authentication, browser, page, and backend state separately.

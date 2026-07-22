@@ -1,0 +1,20 @@
+{
+  "schema_version": "2.1",
+  "timestamp": "",
+  "event_id": "",
+  "actor": "",
+  "adapter": "",
+  "module": "",
+  "step": "",
+  "jobid": "",
+  "state_before": "",
+  "state_after": "",
+  "contract_sha256": "",
+  "action": "",
+  "warning": [],
+  "error": [],
+  "external_side_effect": false,
+  "next_permitted_action": "",
+  "production_ready": false,
+  "no_mdrun": true
+}

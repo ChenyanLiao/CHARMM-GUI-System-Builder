@@ -13,7 +13,7 @@ from typing import Any
 
 
 CANONICAL_NAME = "charmm-gui-system-builder"
-EXPECTED_VERSION = "1.1.1"
+EXPECTED_VERSION = "2.1.0"
 ALLOWED_FIELDS = {
     "name",
     "description",
@@ -42,6 +42,27 @@ REQUIRED_PATHS = (
     "docs/INSTALL_HERMES.md",
     "docs/CAPABILITY_MATRIX.md",
     "docs/CROSS_AGENT_ARCHITECTURE.md",
+    "docs/API_CAPABILITY_REGISTRY.md",
+    "docs/CREDENTIAL_SECURITY.md",
+    "docs/COMMUNITY_VALIDATION.md",
+    "community/MODULE_MATURITY_REGISTRY.json",
+    "community/VALIDATION_REPORT_TEMPLATE.yaml",
+    "community/RULE_CHANGE_PROPOSAL_TEMPLATE.yaml",
+    "community/COMMUNITY_VALIDATORS.md",
+    "rules/capabilities/official_api.json",
+    "rules/pdb_reader/v2.1.json",
+    "rules/ligand_reader/v2.1.json",
+    "rules/membrane_builder/v2.1.json",
+    "rules/solution_builder/v2.1.json",
+    "rules/quick_bilayer/v2.1.json",
+    "rules/output_engines/gromacs-v2.1.json",
+    "templates/RUN_STATE_TEMPLATE.json",
+    "templates/RUNTIME_CAPABILITY_MANIFEST_TEMPLATE.json",
+    "templates/legacy/RUN_STATE_V6_TEMPLATE.json",
+    "core/contracts.py",
+    "core/decisions.py",
+    "core/router.py",
+    "core/credentials.py",
     "metadata/compatibility.json",
 )
 REQUIRED_PLATFORMS = {
@@ -50,6 +71,31 @@ REQUIRED_PLATFORMS = {
     "openclaw",
     "hermes",
     "generic_agent_skills",
+}
+ALLOWED_MATURITY = {
+    "Stable",
+    "Beta",
+    "Browser-Assisted",
+    "Validation-Only",
+    "Unsupported",
+}
+ALLOWED_RISK_LEVELS = {"Routine", "Contextual", "Critical"}
+RULE_PATHS = (
+    "rules/pdb_reader/v2.1.json",
+    "rules/ligand_reader/v2.1.json",
+    "rules/membrane_builder/v2.1.json",
+    "rules/solution_builder/v2.1.json",
+    "rules/quick_bilayer/v2.1.json",
+    "rules/output_engines/gromacs-v2.1.json",
+)
+REQUIRED_RULE_FIELDS = {
+    "parameter_id",
+    "module",
+    "page_or_step",
+    "value_type",
+    "available_options",
+    "risk_level",
+    "recommendation_reason",
 }
 
 
@@ -219,6 +265,8 @@ def validate_skill(root: Path, strict_directory_name: bool = False) -> dict[str,
         errors,
     )
     if compatibility_loaded:
+        if str(compatibility_data.get("schema_version")) != "2.1":
+            errors.append("compatibility metadata schema_version must be 2.1")
         skill = compatibility_data.get("skill", {})
         if skill.get("name") != CANONICAL_NAME:
             errors.append("compatibility metadata skill name is inconsistent")
@@ -234,6 +282,125 @@ def validate_skill(root: Path, strict_directory_name: bool = False) -> dict[str,
             errors.append("production_ready_default must remain false")
         if requirements.get("no_mdrun") is not True:
             errors.append("no_mdrun must remain true")
+        if requirements.get("manual_authentication_default") is not True:
+            errors.append("manual_authentication_default must remain true")
+        if requirements.get("plaintext_credentials_forbidden") is not True:
+            errors.append("plaintext_credentials_forbidden must remain true")
+        if requirements.get("api_token_persistence") != "memory_only":
+            errors.append("api_token_persistence must be memory_only")
+
+    capabilities_loaded, capabilities = _read_optional_json(
+        root / "rules/capabilities/official_api.json",
+        "rules/capabilities/official_api.json",
+        errors,
+    )
+    if capabilities_loaded:
+        if str(capabilities.get("schema_version")) != "2.1":
+            errors.append("capability registry schema_version must be 2.1")
+        for capability in capabilities.get("capabilities", []):
+            route = capability.get("route")
+            maturity = capability.get("maturity")
+            if maturity not in ALLOWED_MATURITY:
+                errors.append(
+                    f"invalid capability maturity: {capability.get('capability_id')}"
+                )
+            if route == "official_api":
+                endpoint = str(capability.get("endpoint", ""))
+                source = str(capability.get("official_source", ""))
+                if not endpoint.startswith("https://charmm-gui.org/api/"):
+                    errors.append(
+                        f"invalid official API endpoint: {capability.get('capability_id')}"
+                    )
+                if not source.startswith("https://www.charmm-gui.org/?doc=api"):
+                    errors.append(
+                        f"official API source missing: {capability.get('capability_id')}"
+                    )
+
+    parameter_ids: set[str] = set()
+    for relative in RULE_PATHS:
+        loaded, rule_pack = _read_optional_json(root / relative, relative, errors)
+        if not loaded:
+            continue
+        if str(rule_pack.get("schema_version")) != "2.1":
+            errors.append(f"rule pack schema_version must be 2.1: {relative}")
+        parameters = rule_pack.get("parameters")
+        if not isinstance(parameters, list):
+            errors.append(f"rule pack parameters must be a list: {relative}")
+            continue
+        for index, parameter in enumerate(parameters):
+            label = f"{relative} parameter[{index}]"
+            if not isinstance(parameter, dict):
+                errors.append(f"{label} must be an object")
+                continue
+            missing = sorted(REQUIRED_RULE_FIELDS - set(parameter))
+            if missing:
+                errors.append(f"{label} missing fields: {', '.join(missing)}")
+            parameter_id = str(parameter.get("parameter_id", ""))
+            if not parameter_id:
+                errors.append(f"{label} has an empty parameter_id")
+            elif parameter_id in parameter_ids:
+                errors.append(f"duplicate rule parameter_id: {parameter_id}")
+            else:
+                parameter_ids.add(parameter_id)
+            if parameter.get("risk_level") not in ALLOWED_RISK_LEVELS:
+                errors.append(f"{label} has an invalid risk_level")
+            options = parameter.get("available_options")
+            if not isinstance(options, list):
+                errors.append(f"{label} available_options must be a list")
+            elif options and "default" in parameter and parameter["default"] not in options:
+                errors.append(f"{label} default is outside available_options")
+            if not str(parameter.get("recommendation_reason", "")).strip():
+                errors.append(f"{label} recommendation_reason is empty")
+
+    maturity_loaded, maturity_registry = _read_optional_json(
+        root / "community/MODULE_MATURITY_REGISTRY.json",
+        "community/MODULE_MATURITY_REGISTRY.json",
+        errors,
+    )
+    if maturity_loaded:
+        if str(maturity_registry.get("schema_version")) != "2.1":
+            errors.append("maturity registry schema_version must be 2.1")
+        external_required = int(
+            maturity_registry.get("stable_promotion_requires_external_groups", 2)
+        )
+        for module in maturity_registry.get("modules", []):
+            level = module.get("maturity")
+            if level not in ALLOWED_MATURITY:
+                errors.append(f"invalid module maturity: {module.get('module')}")
+            if level == "Stable" and (
+                not module.get("offline_tests")
+                or not module.get("maintainer_reproduced")
+                or int(module.get("external_groups", 0)) < external_required
+                or int(module.get("unresolved_high_severity", 0)) != 0
+            ):
+                errors.append(
+                    f"Stable promotion evidence incomplete: {module.get('module')}"
+                )
+        if maturity_registry.get("production_ready") is not False:
+            errors.append("maturity registry production_ready must remain false")
+        if maturity_registry.get("no_mdrun") is not True:
+            errors.append("maturity registry no_mdrun must remain true")
+
+    run_state_loaded, run_state = _read_optional_json(
+        root / "templates/RUN_STATE_TEMPLATE.json",
+        "templates/RUN_STATE_TEMPLATE.json",
+        errors,
+    )
+    if run_state_loaded:
+        if str(run_state.get("schema_version")) != "2.1":
+            errors.append("RUN_STATE_TEMPLATE schema_version must be 2.1")
+        if run_state.get("production_ready") is not False:
+            errors.append("RUN_STATE_TEMPLATE production_ready must remain false")
+        if run_state.get("no_mdrun") is not True:
+            errors.append("RUN_STATE_TEMPLATE no_mdrun must remain true")
+
+    legacy_loaded, legacy_state = _read_optional_json(
+        root / "templates/legacy/RUN_STATE_V6_TEMPLATE.json",
+        "templates/legacy/RUN_STATE_V6_TEMPLATE.json",
+        errors,
+    )
+    if legacy_loaded and legacy_state.get("schema_version") != 6:
+        errors.append("legacy RUN_STATE fixture must preserve schema version 6")
 
     provenance_loaded, provenance = _read_optional_json(
         root / "metadata/provenance.json",

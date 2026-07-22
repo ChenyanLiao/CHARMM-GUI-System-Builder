@@ -1,0 +1,39 @@
+{
+  "schema_version": "2.1",
+  "run_id": "",
+  "target_id": "",
+  "builder": "membrane_builder",
+  "mode": "dry_run",
+  "system": {
+    "has_ligand": false,
+    "ligand_identity": null,
+    "ligand_formal_charge": null,
+    "membrane_only": false
+  },
+  "inputs": [],
+  "experimental_conditions": {
+    "temperature_k": null,
+    "salt": {
+      "type": null,
+      "concentration_m": null
+    },
+    "membrane": {
+      "upper_leaflet": null,
+      "lower_leaflet": null
+    }
+  },
+  "output_engines": ["gromacs"],
+  "expected_output": {
+    "components": [],
+    "protein_segments": [],
+    "ligand": {
+      "required": false,
+      "residue_name": "LIG",
+      "formal_charge": null
+    }
+  },
+  "allow_temporary_critical_assumptions": false,
+  "credential_provider_ref": "",
+  "production_ready": false,
+  "no_mdrun": true
+}
