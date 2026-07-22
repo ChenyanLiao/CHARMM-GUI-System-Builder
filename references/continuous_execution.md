@@ -2,9 +2,11 @@
 
 ## Contract
 
-`unattended_candidate` is a continuous active-task contract, not a claim that a
-browser daemon exists. The Codex task controlling the browser must remain alive
-until a valid pause or terminal gate is reached.
+`unattended_candidate` is a continuous active-task profile, not execution
+authorization and not a claim that a browser daemon exists. The run must have a
+locked v2.1 build contract and, for side effects, a scoped authorization. The
+task controlling the browser or API must remain alive until a valid pause or
+terminal gate is reached.
 
 After every page observation or backend probe:
 
@@ -37,25 +39,33 @@ Yield only for:
 - explicit production approval;
 - verified final workflow completion.
 
-For schema V6, verified completion requires `closure_gates.archive_verified`
+For schema v2.1, verified completion requires `closure_gates.archive_verified`
 and `closure_gates.package_validated`. If custom ligand parameters are expected,
 also require `closure_gates.custom_ligand_verified`. A true
 `workflow_complete` flag cannot override false closure gates.
 
 Routine actions such as `SUBMIT_SYSTEM_SIZE`, `SUBMIT_PACKING`,
 `SUBMIT_COMPONENT_BUILD`, `SUBMIT_ASSEMBLY`, and
-`SUBMIT_INPUT_GENERATION` are not human gates.
+`SUBMIT_INPUT_GENERATION` are not human gates after the exact action is present
+in a valid authorization. Risk level alone never grants permission.
 
 Local read-only actions such as `VALIDATE_DOWNLOAD_ARTIFACT`,
 `VALIDATE_FINAL_PACKAGE`, and `VERIFY_CUSTOM_LIGAND_INJECTION` do not require a
 connected browser and must be consumed before yielding.
 
-## Browser Boundary
+## Authentication And Browser Boundary
 
-The skill never stores credentials and does not inspect password stores,
-cookies, session storage, or tokens. Actual page actions remain in the active
-Codex browser-control loop. That loop must not terminate while the continuation
+Manual login is default. An opted-in Credential Broker may consume a secret from
+an OS vault, but project files contain only an opaque provider reference. It
+never inspects browser cookies or session storage, and API tokens remain
+memory-only. Login evidence capture is disabled. Actual page actions remain in
+the active browser-control loop, which must not terminate while the continuation
 guard says to continue.
+
+An official API action uses the same contract, submission lock, evidence ledger,
+and continuation state as a browser action. If a side-effecting response is
+lost, enter `submission_uncertain` and inspect existing-job evidence before any
+retry.
 
 If browser control disconnects, preserve the jobid and state. Retry within the
 documented cooldown budget or resume through the exact bookmark/Job Retriever.

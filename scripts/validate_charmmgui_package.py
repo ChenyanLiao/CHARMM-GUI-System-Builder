@@ -10,11 +10,19 @@ import argparse
 import json
 import math
 import re
+import sys
 import tarfile
 from pathlib import Path
 from typing import Dict, List, Tuple
 
 from inspect_charmmgui_download import inspect_artifact
+
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from core.io import load_structured  # noqa: E402
+from core.validation_profiles import expectations_from_contract  # noqa: E402
 
 
 EXAMPLE_NINE_SEGMENT_COMPONENTS = (
@@ -100,7 +108,14 @@ def termination_state(text: str) -> tuple[bool, bool]:
     return normal, abnormal
 
 
-def invalid_report(package: Path, inspection: dict[str, object]) -> Dict[str, object]:
+def invalid_report(
+    package: Path,
+    inspection: dict[str, object],
+    *,
+    build_contract_sha256: str = "",
+    expectation_errors: tuple[str, ...] = (),
+) -> Dict[str, object]:
+    v21_mode = bool(build_contract_sha256)
     return {
         "package": str(package),
         "download_inspection": inspection,
@@ -124,7 +139,15 @@ def invalid_report(package: Path, inspection: dict[str, object]) -> Dict[str, ob
         "step5_input_abnormal_termination": False,
         "has_required_gromacs_files": False,
         "validation_passed": False,
-        "status": "Invalid_Download_Artifact",
+        "package_validated": False,
+        "contract_expectations_complete": not expectation_errors,
+        "contract_expectation_errors": list(expectation_errors),
+        "strict_grompp_passed": False,
+        "custom_ligand_verified": None,
+        "technical_pass": False,
+        "status": "Incomplete_Or_Unknown" if v21_mode else "Invalid_Download_Artifact",
+        "legacy_status": "Invalid_Download_Artifact",
+        "build_contract_sha256": build_contract_sha256,
         "production_ready": False,
         "no_mdrun": True,
     }
@@ -137,11 +160,30 @@ def validate(
     ligand_name: str = "LIG",
     expected_ligand_charge: float | None = None,
     expected_components: tuple[str, ...] = (),
+    build_contract: dict | None = None,
 ) -> Dict[str, object]:
     package = package.expanduser().resolve()
+    build_contract_sha256 = ""
+    expectation_errors: tuple[str, ...] = ()
+    if build_contract is not None:
+        expectations = expectations_from_contract(build_contract)
+        expected_components = tuple(
+            dict.fromkeys((*expectations.expected_components, *expected_components))
+        )
+        require_ligand = expectations.require_ligand or require_ligand
+        ligand_name = expectations.ligand_name
+        if expectations.expected_ligand_charge is not None:
+            expected_ligand_charge = expectations.expected_ligand_charge
+        expectation_errors = expectations.expectation_errors
+        build_contract_sha256 = str(build_contract["contract_sha256"])
     inspection = inspect_artifact(package)
     if inspection["classification"] != "valid_final_candidate":
-        return invalid_report(package, inspection)
+        return invalid_report(
+            package,
+            inspection,
+            build_contract_sha256=build_contract_sha256,
+            expectation_errors=expectation_errors,
+        )
 
     members = regular_members(package)
     names = [member.name for member in members]
@@ -191,6 +233,7 @@ def validate(
         and ligand_ok
         and charge_ok
         and not missing_components
+        and not expectation_errors
     )
     return {
         "package": str(package),
@@ -216,10 +259,24 @@ def validate(
         "step5_input_abnormal_termination": abnormal,
         "has_required_gromacs_files": has_required_files,
         "validation_passed": passed,
+        "package_validated": passed,
+        "contract_expectations_complete": not expectation_errors,
+        "contract_expectation_errors": list(expectation_errors),
+        "strict_grompp_passed": False,
+        "custom_ligand_verified": False if require_ligand else None,
+        "technical_pass": False,
         "status": (
+            "Candidate_Package_Validated"
+            if passed and build_contract is not None
+            else "Technical_Pass_Not_Production_Approval"
+            if passed
+            else ("Technical_Fail" if build_contract is not None else "Candidate_Validation_Failed")
+        ),
+        "legacy_status": (
             "Technical_Pass_Not_Production_Approval"
             if passed else "Candidate_Validation_Failed"
         ),
+        "build_contract_sha256": build_contract_sha256,
         "production_ready": False,
         "no_mdrun": True,
     }
@@ -240,10 +297,14 @@ def write_markdown(report: Dict[str, object], path: Path) -> None:
         f"- SHA256: `{report['sha256']}`",
         f"- Regular-file members: {report['member_count']}",
         f"- Required GROMACS files present: {report['has_required_gromacs_files']}",
+        f"- Contract expectations complete: {report['contract_expectations_complete']}",
+        f"- Contract expectation errors: {report['contract_expectation_errors']}",
         f"- Step5 normal termination: {report['step5_input_normal_termination']}",
         f"- Step5 abnormal termination: {report['step5_input_abnormal_termination']}",
         f"- Ligand charge: {report['ligand_charge']}",
         f"- Missing required components: {report['missing_required_components']}",
+        "- Strict grompp passed: false (separate gate required)",
+        "- Technical pass: false (closure gates remain open)",
         "- Production-ready: false",
         "- gmx mdrun executed: No",
         "",
@@ -274,6 +335,7 @@ def main() -> int:
         default="none",
     )
     parser.add_argument("--expected-component", action="append", default=[])
+    parser.add_argument("--build-contract", type=Path)
     args = parser.parse_args()
 
     expected_components = tuple(dict.fromkeys(
@@ -287,6 +349,7 @@ def main() -> int:
         ligand_name=args.ligand_name,
         expected_ligand_charge=args.expected_ligand_charge,
         expected_components=expected_components,
+        build_contract=(load_structured(args.build_contract) if args.build_contract else None),
     )
     json_path = outdir / f"{args.prefix}.json"
     md_path = outdir / f"{args.prefix}.md"

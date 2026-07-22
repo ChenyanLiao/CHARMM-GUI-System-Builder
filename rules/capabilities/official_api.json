@@ -1,0 +1,85 @@
+{
+  "schema_version": "2.1",
+  "capabilities": [
+    {
+      "capability_id": "api.login",
+      "module": "general",
+      "action": "login",
+      "route": "official_api",
+      "maturity": "Beta",
+      "method": "POST",
+      "endpoint": "https://charmm-gui.org/api/login",
+      "official_source": "https://www.charmm-gui.org/?doc=api",
+      "last_verified": "2026-07-21",
+      "side_effecting": false
+    },
+    {
+      "capability_id": "api.check_status",
+      "module": "general",
+      "action": "check_status",
+      "route": "official_api",
+      "maturity": "Beta",
+      "method": "GET",
+      "endpoint": "https://charmm-gui.org/api/check_status",
+      "official_source": "https://www.charmm-gui.org/?doc=api",
+      "last_verified": "2026-07-21",
+      "side_effecting": false
+    },
+    {
+      "capability_id": "api.download",
+      "module": "general",
+      "action": "download",
+      "route": "official_api",
+      "maturity": "Beta",
+      "method": "GET",
+      "endpoint": "https://charmm-gui.org/api/download",
+      "official_source": "https://www.charmm-gui.org/?doc=api",
+      "last_verified": "2026-07-21",
+      "side_effecting": false
+    },
+    {
+      "capability_id": "api.quick_bilayer",
+      "module": "quick_bilayer",
+      "action": "submit",
+      "route": "official_api",
+      "maturity": "Beta",
+      "method": "POST",
+      "endpoint": "https://charmm-gui.org/api/quick_bilayer",
+      "official_source": "https://www.charmm-gui.org/?doc=api&module=quickb",
+      "last_verified": "2026-07-21",
+      "side_effecting": true
+    },
+    {
+      "capability_id": "browser.pdb_reader",
+      "module": "pdb_reader",
+      "action": "submit",
+      "route": "audited_browser",
+      "maturity": "Browser-Assisted",
+      "side_effecting": true
+    },
+    {
+      "capability_id": "browser.ligand_reader",
+      "module": "ligand_reader",
+      "action": "submit",
+      "route": "audited_browser",
+      "maturity": "Browser-Assisted",
+      "side_effecting": true
+    },
+    {
+      "capability_id": "browser.membrane_builder",
+      "module": "membrane_builder",
+      "action": "submit",
+      "route": "audited_browser",
+      "maturity": "Browser-Assisted",
+      "side_effecting": true
+    },
+    {
+      "capability_id": "browser.solution_builder",
+      "module": "solution_builder",
+      "action": "submit",
+      "route": "audited_browser",
+      "maturity": "Browser-Assisted",
+      "side_effecting": true
+    }
+  ]
+}

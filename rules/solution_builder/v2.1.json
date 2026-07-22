@@ -1,0 +1,92 @@
+{
+  "schema_version": "2.1",
+  "module": "solution_builder",
+  "parameters": [
+    {
+      "parameter_id": "solution.box_shape",
+      "module": "solution_builder",
+      "page_or_step": "solution_setup",
+      "value_type": "enum",
+      "available_options": ["rectangular", "octahedral", "reviewed_other"],
+      "default": "rectangular",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Choose box shape from system geometry and output-engine support."
+    },
+    {
+      "parameter_id": "solution.padding_angstrom",
+      "module": "solution_builder",
+      "page_or_step": "solution_setup",
+      "value_type": "number",
+      "available_options": [],
+      "default": 10.0,
+      "risk_level": "Contextual",
+      "recommendation_reason": "Padding must prevent periodic self-interaction."
+    },
+    {
+      "parameter_id": "solution.water_model",
+      "module": "solution_builder",
+      "page_or_step": "solvent",
+      "value_type": "enum",
+      "available_options": ["TIP3P"],
+      "default": "TIP3P",
+      "risk_level": "Routine",
+      "recommendation_reason": "Use the water model compatible with CHARMM force fields."
+    },
+    {
+      "parameter_id": "solution.ions.type",
+      "module": "solution_builder",
+      "page_or_step": "ions",
+      "value_type": "enum",
+      "available_options": ["NaCl", "KCl", "other_reviewed"],
+      "default": "NaCl",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Match experimental conditions when known.",
+      "evidence": [
+        {"source": "user_experimental_condition", "path": "run_request.experimental_conditions.salt.type", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "solution.ions.concentration_m",
+      "module": "solution_builder",
+      "page_or_step": "ions",
+      "value_type": "number",
+      "available_options": [],
+      "default": 0.15,
+      "risk_level": "Contextual",
+      "recommendation_reason": "Use measured or intended ionic strength.",
+      "evidence": [
+        {"source": "user_experimental_condition", "path": "run_request.experimental_conditions.salt.concentration_m", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "solution.ions.internal_names",
+      "module": "solution_builder",
+      "page_or_step": "ions",
+      "value_type": "enum",
+      "available_options": ["SOD/CLA", "POT/CLA", "reviewed_other"],
+      "default": "SOD/CLA",
+      "risk_level": "Contextual",
+      "recommendation_reason": "The displayed salt and internal CHARMM ion names must agree."
+    },
+    {
+      "parameter_id": "solution.ions.placement_method",
+      "module": "solution_builder",
+      "page_or_step": "ions",
+      "value_type": "enum",
+      "available_options": ["distance", "monte_carlo"],
+      "default": "distance",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Record the selected ion-placement method instead of relying on the page default."
+    },
+    {
+      "parameter_id": "solution.ions.neutralize",
+      "module": "solution_builder",
+      "page_or_step": "ions",
+      "value_type": "boolean",
+      "available_options": [true, false],
+      "default": true,
+      "risk_level": "Contextual",
+      "recommendation_reason": "Charge neutralization is distinct from adding the requested bulk salt concentration."
+    }
+  ]
+}

@@ -1,5 +1,37 @@
 # Known CHARMM-GUI Failure Modes
 
+## 2026-07-21 - undocumented full-builder API assumption
+
+- Step: capability routing before submission.
+- Error excerpt: a page form or third-party comment was treated as proof that
+  PDB Reader or Protein/Membrane Builder had a supported public API.
+- Root cause: CHARMM-GUI documents general login/status/download and Quick
+  Bilayer APIs, but that does not establish a complete API for every builder.
+- Recovery action: consult `rules/capabilities/official_api.json`; keep the full
+  builder Browser-Assisted until an official source and reviewed schema exist.
+- Reusable: yes.
+
+## 2026-07-21 - submission response lost before job ID capture
+
+- Step: first side-effecting API or browser submission.
+- Error excerpt: the transport failed after submission may have reached the
+  server, but no job ID was persisted.
+- Root cause: retrying from a generic network error can create a duplicate job.
+- Recovery action: set `submission_state=submission_uncertain`; inspect Job
+  Retriever or authorized existing-job evidence before any retry.
+- Reusable: yes.
+
+## 2026-07-21 - saved credential mistaken for execution approval
+
+- Step: unattended login/submission.
+- Error excerpt: an agent could retrieve a vault credential and attempted to
+  infer permission for an unreviewed action.
+- Root cause: authentication and authorization were conflated.
+- Recovery action: require a locked contract plus a scoped, signed, expiring
+  authorization with remaining submission allowance. Saved credentials never
+  clear Critical or production gates.
+- Reusable: yes.
+
 ## 2026-07-08 - job 9000000001 - Step 3/4
 
 - Step: Membrane Builder Step 3 packing / Step 4 lipid component build.

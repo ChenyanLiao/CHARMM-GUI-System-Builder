@@ -1,0 +1,142 @@
+{
+  "schema_version": "2.1",
+  "module": "quick_bilayer",
+  "parameters": [
+    {
+      "parameter_id": "quick_bilayer.membrane_only",
+      "module": "quick_bilayer",
+      "page_or_step": "api_request",
+      "value_type": "boolean",
+      "available_options": [false, true],
+      "default": false,
+      "risk_level": "Critical",
+      "recommendation_reason": "Protein-containing and membrane-only requests are different workflows and require explicit selection.",
+      "evidence": [
+        {"source": "user_experimental_condition", "path": "run_request.system.membrane_only", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "quick_bilayer.source_pdbreader_jobid",
+      "module": "quick_bilayer",
+      "page_or_step": "api_request",
+      "value_type": "string",
+      "available_options": [],
+      "risk_level": "Critical",
+      "temporary_assumption_allowed": false,
+      "recommendation_reason": "A protein Quick Bilayer request must reference the intended completed PDB Reader job.",
+      "applies_if": {"path": "run_request.system.membrane_only", "equals": false},
+      "evidence": [
+        {"source": "input_audit", "path": "input_audit.pdb_reader.jobid", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "quick_bilayer.margin_angstrom",
+      "module": "quick_bilayer",
+      "page_or_step": "api_request",
+      "value_type": "number",
+      "available_options": [],
+      "default": 20.0,
+      "risk_level": "Contextual",
+      "recommendation_reason": "Box margin must be appropriate for the protein footprint."
+    },
+    {
+      "parameter_id": "quick_bilayer.water_distance_angstrom",
+      "module": "quick_bilayer",
+      "page_or_step": "api_request",
+      "value_type": "number",
+      "available_options": [],
+      "default": 22.5,
+      "risk_level": "Contextual",
+      "recommendation_reason": "Use the documented default unless system dimensions require more water."
+    },
+    {
+      "parameter_id": "quick_bilayer.upper",
+      "module": "quick_bilayer",
+      "page_or_step": "api_request",
+      "value_type": "composition",
+      "available_options": [],
+      "default": "POPC:CHL1=70:30",
+      "risk_level": "Contextual",
+      "recommendation_reason": "This is a generic test composition, not a universal membrane model."
+    },
+    {
+      "parameter_id": "quick_bilayer.lower",
+      "module": "quick_bilayer",
+      "page_or_step": "api_request",
+      "value_type": "composition",
+      "available_options": [],
+      "default": "POPC:CHL1=70:30",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Leaflet symmetry requires contextual review."
+    },
+    {
+      "parameter_id": "quick_bilayer.ppm",
+      "module": "quick_bilayer",
+      "page_or_step": "api_request",
+      "value_type": "boolean",
+      "available_options": [false, true],
+      "default": false,
+      "risk_level": "Critical",
+      "temporary_assumption_allowed": false,
+      "recommendation_reason": "Protein orientation must be explicitly reviewed.",
+      "applies_if": {"path": "run_request.system.membrane_only", "equals": false}
+    },
+    {
+      "parameter_id": "quick_bilayer.heteroatoms",
+      "module": "quick_bilayer",
+      "page_or_step": "api_request",
+      "value_type": "boolean",
+      "available_options": [false, true],
+      "default": false,
+      "risk_level": "Critical",
+      "recommendation_reason": "Heteroatom retention does not prove custom ligand topology transfer.",
+      "applies_if": {"path": "run_request.system.has_ligand", "equals": true}
+    },
+    {
+      "parameter_id": "quick_bilayer.ion_type",
+      "module": "quick_bilayer",
+      "page_or_step": "api_request",
+      "value_type": "enum",
+      "available_options": ["NaCl", "KCl", "other_reviewed"],
+      "default": "NaCl",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Match experimental conditions; NaCl is only a generic starting point.",
+      "evidence": [
+        {"source": "user_experimental_condition", "path": "run_request.experimental_conditions.salt.type", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "quick_bilayer.ion_concentration_m",
+      "module": "quick_bilayer",
+      "page_or_step": "api_request",
+      "value_type": "number",
+      "available_options": [],
+      "default": 0.15,
+      "risk_level": "Contextual",
+      "recommendation_reason": "Use the intended ionic strength and record the submitted API value.",
+      "evidence": [
+        {"source": "user_experimental_condition", "path": "run_request.experimental_conditions.salt.concentration_m", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "quick_bilayer.protein_projection_upper",
+      "module": "quick_bilayer",
+      "page_or_step": "api_request",
+      "value_type": "boolean",
+      "available_options": [false, true],
+      "default": false,
+      "risk_level": "Routine",
+      "recommendation_reason": "Enable upper projection only when protein geometry requires it."
+    },
+    {
+      "parameter_id": "quick_bilayer.protein_projection_lower",
+      "module": "quick_bilayer",
+      "page_or_step": "api_request",
+      "value_type": "boolean",
+      "available_options": [false, true],
+      "default": false,
+      "risk_level": "Routine",
+      "recommendation_reason": "Lower projection is not a routine default."
+    }
+  ]
+}

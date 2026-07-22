@@ -14,7 +14,7 @@
 Treat CHARMM-GUI forms as dynamic state, not static HTML.
 
 1. Capture the exact job ID, URL, step, selected controls, and dependent fields.
-2. Change only a value that differs from the approved project profile.
+2. Change only a value that differs from the locked build contract.
 3. After changing a dropdown, radio button, or checkbox that can trigger page
    JavaScript, re-read every dependent control before making another change.
 4. Do not re-select an already selected force field. In job `9000000004`,
@@ -22,8 +22,12 @@ Treat CHARMM-GUI forms as dynamic state, not static HTML.
    controls. Reloading a clean same-job page and changing only GROMACS preserved
    the intended state.
 5. Confirm controls from DOM/accessibility state, not nearby text.
-6. Exclude password, token, session, cookie, CSRF, auth, JWT, MFA, CAPTCHA, and
+6. Suppress capture for the entire login operation. On all other pages, exclude
+   password, token, session, cookie, CSRF, auth, JWT, MFA, CAPTCHA, and
    credential fields from snapshots.
+7. Compare recommendation, locked value, final DOM value, safe hidden value,
+   and generated output. Mark drift `WRONG`, `MISSING`, `UNKNOWN`, `RISK`, or
+   `BLOCK_PRODUCTION`; do not continue on material drift.
 
 Use a before/after field diff for each dependency-changing mutation. If an
 unrelated field changes, stop and restore the page from the same-job URL rather
@@ -112,6 +116,7 @@ The inspector reports:
 | Backend output still grows | backend running | Wait at the configured interval. |
 | Page says running, backend is normal and products exist | stale page | Reopen the same job; do not resubmit. |
 | Navigation returns `ERR_EMPTY_RESPONSE`, backend status unknown | transient page failure | Preserve lock, wait, and probe backend. |
+| API/browser POST may have succeeded but no job ID was captured | `submission_uncertain` | Inspect Job Retriever or authorized existing-job evidence; do not retry automatically. |
 | Chrome shows network failure but backend is normal | transfer failure | Resume only the newest Chrome record; do not click the page link again. |
 | Repeated Chrome interruptions | browser-path failure | Open the same completed job in Safari; do not rerun Step 5/6. |
 | Final file begins with HTML or contains a CHARMM-GUI login page | `invalid_html` | Preserve hash/size, re-download from authenticated final page. |
@@ -137,6 +142,8 @@ names, ligand names, and local paths are synthetic:
   Safari produced a 758,997,504-byte POSIX tar. The package passed GROMACS
   component validation and custom injection checks at 46/46 converted terms,
   5/5 primary terms, and 3/3 function-9 target connections. Its status remains
-  `Technical_Pass_Not_Production_Approval`, not production-ready.
+  `Candidate_Package_Validated`. Strict `grompp` and any applicable custom-
+  ligand verification are separate gates before
+  `Technical_Pass_Not_Production_Approval`; neither status is production-ready.
 
 These examples are recovery patterns, not production approval.

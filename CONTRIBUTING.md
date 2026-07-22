@@ -9,12 +9,14 @@ Contributions are welcome through GitHub issues and pull requests.
    paths.
 2. Keep browser automation conservative: no CAPTCHA/MFA bypass, credential
    extraction, fabricated API calls, duplicate submissions, or production MD.
+   New API capabilities require an official CHARMM-GUI source and registry
+   update; captured browser traffic is not sufficient evidence.
 3. Add or update tests for behavior changes.
 4. Run:
 
    ```bash
    python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
-   python3 -m compileall -q scripts
+   python3 -m compileall -q core scripts
    python3 scripts/validate_skill_package.py .
    ```
 
@@ -24,6 +26,11 @@ Contributions are welcome through GitHub issues and pull requests.
 
 6. Explain the evidence, failure mode, recovery behavior, and remaining
    scientific limits in the pull request.
+
+7. Submit external reproductions through
+   `community/VALIDATION_REPORT_TEMPLATE.yaml`. Submit recommendation changes
+   through `community/RULE_CHANGE_PROPOSAL_TEMPLATE.yaml`; reports never edit a
+   rule or locked contract automatically.
 
 ## Licensing
 

@@ -1,0 +1,151 @@
+{
+  "schema_version": "2.1",
+  "module": "pdb_reader",
+  "parameters": [
+    {
+      "parameter_id": "pdb.original_input_preserved",
+      "module": "pdb_reader",
+      "page_or_step": "local_preflight",
+      "value_type": "boolean",
+      "available_options": [true],
+      "default": true,
+      "risk_level": "Routine",
+      "recommendation_reason": "Never overwrite the original structure."
+    },
+    {
+      "parameter_id": "pdb.old_bulk_water_policy",
+      "module": "pdb_reader",
+      "page_or_step": "pdb_manipulation",
+      "value_type": "enum",
+      "available_options": ["remove", "retain_reviewed"],
+      "default": "remove",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Remove old bulk solvent unless a reviewed structural water is required.",
+      "evidence": [
+        {"source": "approved_target_profile", "path": "target_profile.approved_parameters.pdb.old_bulk_water_policy", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "pdb.old_bulk_ion_policy",
+      "module": "pdb_reader",
+      "page_or_step": "pdb_manipulation",
+      "value_type": "enum",
+      "available_options": ["remove", "retain_reviewed"],
+      "default": "remove",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Remove old bulk ions and preserve only explicitly justified key ions.",
+      "evidence": [
+        {"source": "approved_target_profile", "path": "target_profile.approved_parameters.pdb.old_bulk_ion_policy", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "pdb.key_ion_strategy",
+      "module": "pdb_reader",
+      "page_or_step": "pdb_manipulation",
+      "value_type": "enum",
+      "available_options": ["retain_reviewed", "remove", "expert_review"],
+      "risk_level": "Critical",
+      "temporary_assumption_allowed": false,
+      "recommendation_reason": "Functionally relevant metal ions require target-specific review.",
+      "evidence": [
+        {"source": "approved_target_profile", "path": "target_profile.approved_parameters.pdb.key_ion_strategy", "confidence": "high"},
+        {"source": "input_audit", "path": "input_audit.key_ions.recommendation", "confidence": "medium"}
+      ]
+    },
+    {
+      "parameter_id": "protein.segmentation",
+      "module": "pdb_reader",
+      "page_or_step": "pdb_reader",
+      "value_type": "object",
+      "available_options": ["reviewed_segments", "single_segment"],
+      "risk_level": "Critical",
+      "temporary_assumption_allowed": false,
+      "recommendation_reason": "Protein connectivity across coordinate gaps must be explicitly reviewed.",
+      "evidence": [
+        {"source": "approved_target_profile", "path": "target_profile.approved_parameters.protein.segmentation", "confidence": "high"},
+        {"source": "input_audit", "path": "input_audit.protein.segmentation_recommendation", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "protein.missing_residue_strategy",
+      "module": "pdb_reader",
+      "page_or_step": "pdb_manipulation",
+      "value_type": "enum",
+      "available_options": ["do_not_autofill_large_gaps", "model_reviewed_loops", "expert_review"],
+      "default": "do_not_autofill_large_gaps",
+      "risk_level": "Critical",
+      "recommendation_reason": "Large unresolved gaps must not be silently auto-built.",
+      "evidence": [
+        {"source": "approved_target_profile", "path": "target_profile.approved_parameters.protein.missing_residue_strategy", "confidence": "high"},
+        {"source": "input_audit", "path": "input_audit.protein.missing_residue_strategy", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "pdb.altloc_strategy",
+      "module": "pdb_reader",
+      "page_or_step": "local_preflight",
+      "value_type": "enum",
+      "available_options": ["highest_occupancy", "review_each", "none_present"],
+      "default": "review_each",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Alternate locations must be resolved before submission.",
+      "evidence": [
+        {"source": "input_audit", "path": "input_audit.protein.altloc_strategy", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "pdb.correction_mode",
+      "module": "pdb_reader",
+      "page_or_step": "pdb_reader",
+      "value_type": "enum",
+      "available_options": ["enabled_reviewed", "disabled_reviewed"],
+      "default": "enabled_reviewed",
+      "risk_level": "Contextual",
+      "recommendation_reason": "PDB correction can change residue naming and segmentation, so the resulting structure must be reviewed."
+    },
+    {
+      "parameter_id": "protein.missing_residue_autofill",
+      "module": "pdb_reader",
+      "page_or_step": "pdb_manipulation",
+      "value_type": "boolean",
+      "available_options": [false, true],
+      "default": false,
+      "risk_level": "Critical",
+      "temporary_assumption_allowed": false,
+      "recommendation_reason": "Do not silently auto-build large unresolved regions or bridge reviewed segment boundaries."
+    },
+    {
+      "parameter_id": "pdb.unrelated_hetero_policy",
+      "module": "pdb_reader",
+      "page_or_step": "pdb_manipulation",
+      "value_type": "enum",
+      "available_options": ["remove", "retain_reviewed"],
+      "default": "remove",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Retain only cofactors, ligands, glycans, or ions justified for the intended model.",
+      "evidence": [
+        {"source": "input_audit", "path": "input_audit.hetero_residues.policy", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "protein.termini_patch_strategy",
+      "module": "pdb_reader",
+      "page_or_step": "pdb_reader",
+      "value_type": "enum",
+      "available_options": ["standard_reviewed", "custom_reviewed", "expert_review"],
+      "default": "standard_reviewed",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Each segment terminus must use a patch consistent with the physical chain break."
+    },
+    {
+      "parameter_id": "protein.disulfide_strategy",
+      "module": "pdb_reader",
+      "page_or_step": "pdb_reader",
+      "value_type": "enum",
+      "available_options": ["detected_and_reviewed", "none_present", "manual_review"],
+      "default": "manual_review",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Detected disulfides must be compared with structure geometry and target biology."
+    }
+  ]
+}

@@ -1,11 +1,11 @@
 ---
 name: charmm-gui-system-builder
-description: Build, recover, and validate auditable CHARMM-GUI PDB Reader, Ligand Reader, Membrane Builder, Solution Builder, and GROMACS workflows. Use for transmembrane protein-ligand systems, segmented proteins, custom CGenFF/ffTK parameters, slow or stale CHARMM-GUI jobs, authenticated final-package downloads, HTML-disguised archive failures, and strict pre-MD package checks. Default to dry_run or Candidate_Not_For_MD and block production until scientific and expert gates pass.
+description: Plan, build, recover, and validate auditable CHARMM-GUI PDB Reader, Ligand Reader, Membrane Builder, Solution Builder, Quick Bilayer, and GROMACS workflows. Use when a user needs a complete parameter inventory with risk-ranked recommendations, an immutable approved build contract, official-API or audited-browser routing, safe job recovery, custom CGenFF/ffTK checks, or strict pre-MD package validation. Default to dry_run or Candidate_Not_For_MD and block production until scientific and expert gates pass.
 license: AGPL-3.0-only
-compatibility: Agent Skills compatible. Bundled validators require Python 3.10+. Interactive CHARMM-GUI work requires terminal and file access plus an authenticated browser path that can capture page state and downloads; human login, MFA, CAPTCHA, and native-dialog fallback remain operator actions.
+compatibility: Agent Skills compatible. Bundled tooling requires Python 3.10+. Interactive builders need an audited browser; documented API actions need network access. Login is manual by default, with optional OS-vault credentials and signed authorization. MFA, CAPTCHA, terms changes, and native-dialog fallback remain operator actions.
 metadata:
   author: Liao Chenyan
-  version: "1.1.1"
+  version: "2.1.0"
   canonical_repository: https://github.com/ChenyanLiao/CHARMM-GUI-System-Builder
   origin_id: io.github.ChenyanLiao.charmm-gui-system-builder
 ---
@@ -28,13 +28,13 @@ and must not be represented as canonical releases.
 
 ## Version
 
-Use release 1.1.1 Cross-Agent Edition of the V6 workflow. V6 separates page
-completion, backend completion, browser transfer state,
-archive acquisition, package validation, custom-parameter injection, strict
-GROMACS preprocessing, and production approval. Never collapse these gates into
-one success claim. Release 1.1.1 keeps one scientific core and moves
-runtime-specific tool instructions into adapters; do not fork the core
-procedure per agent.
+Use release 2.1.0 Guided Contract Edition. Before any builder action, expand the
+requested system into a complete parameter inventory, explain the available
+choices, classify risk, obtain the required confirmations, and lock a hashed
+build contract. Route that same contract through only a documented official API
+or an audited browser. Keep page completion, backend completion, transfer,
+archive, package, custom-parameter, preprocessing, and scientific approval as
+separate gates. Runtime adapters must not fork or weaken this core workflow.
 
 ## Select A Runtime Adapter
 
@@ -45,6 +45,13 @@ Read exactly one runtime adapter before using browser or terminal tools:
 - [OpenClaw](adapters/openclaw.md)
 - [Hermes Agent](adapters/hermes.md)
 - [Generic Agent Skills client](adapters/generic-agent-skills.md)
+
+At run startup, copy
+[`RUNTIME_CAPABILITY_MANIFEST_TEMPLATE.json`](templates/RUNTIME_CAPABILITY_MANIFEST_TEMPLATE.json)
+into the run directory and record each capability as `available`,
+`operator_required`, or `unavailable` with concrete evidence. Do not infer a
+browser, network, vault, upload, download, or native-dialog capability from the
+agent name. Select the execution route only after this manifest is complete.
 
 Before acting, record whether the runtime has file read/write, local command
 execution, an authenticated browser path, screenshot/page-state capture,
@@ -65,16 +72,24 @@ inventing tool names or claiming an action occurred.
   step, or error excerpt before retrying a failed step.
 - Use the matching checklist under `checklists/` before each irreversible page
   submission and before declaring a package valid.
+- Read [API_CAPABILITY_REGISTRY.md](docs/API_CAPABILITY_REGISTRY.md) before any
+  API action and [CREDENTIAL_SECURITY.md](docs/CREDENTIAL_SECURITY.md) before
+  enabling saved credentials or unattended execution.
 
 ## Enforce The Safety Boundary
 
-- Never record, print, save, copy, or inspect passwords, cookies, session
-  tokens, JWTs, CSRF values, browser credentials, CAPTCHA responses, or MFA
-  codes.
-- Reuse an already authenticated browser session. Keep login, MFA, CAPTCHA,
-  Touch ID, and OS-password confirmation as human actions.
-- Never hard-code credentials or place them in screenshots, JSON snapshots,
-  reports, command history, environment files, skills, or examples.
+- Never record, print, copy, export, or place passwords, cookies, tokens, JWTs,
+  CSRF values, CAPTCHA responses, or MFA codes in project files, screenshots,
+  reports, command history, environment files, skills, examples, or chat.
+- Login is manual by default. An explicit opt-in may store a credential only in
+  macOS Keychain or a supported OS secret service; run files contain only an
+  opaque provider reference. Plaintext credential files are forbidden.
+- Retrieve a saved secret and consume it inside the same controlled login
+  process. Keep API tokens memory-only. Never inspect or export browser cookies.
+- Saved credentials authenticate an account; they do not authorize submission.
+  Side effects require a content-bound, expiring authorization for the exact
+  locked contract. MFA, CAPTCHA, terms acceptance, Touch ID, and account
+  challenges always stop for the operator.
 - Do not bypass anti-automation controls or fabricate unsupported API requests.
 - Do not run production MD or `gmx mdrun` unless the project owner separately
   authorizes the exact action.
@@ -95,7 +110,8 @@ Report the narrowest status supported by evidence:
 | `Builder_Backend_Complete_Package_Unverified` | Final backend output terminated normally, but no real final archive has passed inspection. |
 | `Candidate_Package_Validated` | A real archive lists successfully and contains the required GROMACS payload and components. |
 | `Technical_Pass_Not_Production_Approval` | Package, custom-parameter injection, and strict `grompp` gates pass; scientific approvals may remain open. |
-| `Production_Approved` | Every staged approval is explicit and `production_allowed: true`. |
+| `Technical_Fail` | A contract-derived technical gate failed and the failed evidence is preserved. |
+| `Incomplete_Or_Unknown` | Evidence is insufficient to classify the run safely. |
 
 Never call a visible `download.tgz` link, a Step 6 page, or
 `step5_input.out NORMAL TERMINATION` a validated GROMACS package.
@@ -114,6 +130,37 @@ Use independent evidence layers:
 Use backend files over a stale running banner. Use archive contents over a
 filename or page link. Use strict preprocessing over a superficial file count.
 Do not infer a higher layer from a lower one.
+
+## Run The Guided Decision Protocol
+
+Before submitting or filling a builder page:
+
+1. Create `TARGET_PROFILE.yaml` for reusable reviewed facts and
+   `RUN_REQUEST.yaml` for this run's intent. Never treat either as execution
+   approval.
+2. Audit the actual PDB, ligand, parameters, and requested output, then run
+   `prepare_build_contract.py` to activate only the relevant versioned rule
+   packs.
+3. For every active parameter, show the available options or fill-in range,
+   the recommended value, reason, evidence, confidence, dependencies, and any
+   conflict. Do not ask only for a salt concentration; include salt species,
+   internal ion names, neutralization, and experimental-condition conflicts.
+4. `Routine` values may adopt the recommendation automatically but remain
+   visible in the decision register. `Contextual` values require one informed
+   confirmation. `Critical` values require options plus a recommended path and
+   cannot use a silent default.
+5. A Critical temporary assumption is allowed only for `test_only` or
+   `Candidate_Not_For_MD` and keeps production blocked. Never use one to bypass
+   ligand identity, protein connectivity/segmentation, or membrane orientation.
+6. Freeze all accepted values, input hashes, expected components, module
+   maturity, and execution route in `APPROVED_BUILD_CONTRACT.json`. Lock it and
+   record its SHA-256 before any side-effecting action. A material change creates
+   a new revision and invalidates the previous execution authorization.
+
+Evidence priority is experimental conditions, approved expert/target profile,
+current input audit, official CHARMM-GUI documentation, versioned rules and
+reliable literature, then agent inference. Any material conflict escalates to
+Critical even if one source ranks higher.
 
 ## Prepare And Freeze Inputs
 
@@ -170,8 +217,9 @@ Use `Input Generator -> Membrane Builder -> Protein/Membrane System` for a
 transmembrane protein. Do not substitute Solution Builder or an ordinary water
 box.
 
-For a large eukaryotic channel candidate build, use the reviewed project
-profile rather than memory. A common initial profile is:
+For a large eukaryotic channel candidate build, derive recommendations from the
+reviewed target profile and current audit rather than memory. A common
+test-only starting profile, still requiring contract review, is:
 
 - CHARMM36m/CHARMM36 protein and CHARMM36 lipid;
 - approved custom ligand parameters, or CGenFF only for test-only work;
@@ -186,12 +234,30 @@ plausible top/bottom areas, a sensible protein Z span, and preserved ligand
 pose/internal geometry. Stop on empty PPM output, zero top/bottom area, or an
 unreviewed fallback to `Use PDB orientation`.
 
+## Route Only Through Confirmed Capabilities
+
+Read `rules/capabilities/official_api.json` and route by capability, not by
+convenience. v2.1 recognizes only the officially documented login, status,
+download, and Quick Bilayer endpoints. Full PDB Reader, Ligand Reader,
+Protein/Membrane Builder, and Solution Builder submission remain audited-browser
+workflows unless official documentation is added and the registry is reviewed.
+Never infer endpoints from page forms, replay captured session requests, or
+label an undocumented request as official API support.
+
+Before one side-effecting submission, verify the locked contract hash,
+authorization scope and expiry, approved input hashes, mode, and remaining
+submission count. Persist a returned job ID immediately and reuse it for status,
+recovery, and download. If a POST may have succeeded but no job ID was captured,
+set `submission_state=submission_uncertain`; inspect Job Retriever or available
+evidence before any retry. Never create a replacement job automatically.
+
 ## Mutate Browser Forms Surgically
 
 Use an existing authenticated browser session supported by the selected runtime
-adapter. Keep authentication human-controlled. Use native computer control only
-when the adapter explicitly provides it and the browser interface cannot handle
-an upload or save panel; otherwise stop for an operator action.
+adapter, or an approved Credential Broker path. Suppress screenshots and DOM
+evidence capture during login. Use native computer control only when the adapter
+explicitly provides it and the browser interface cannot handle an upload or save
+panel; otherwise stop for an operator action.
 
 Before every submission:
 
@@ -231,26 +297,37 @@ Run `verify_step_gate.py` where applicable and apply these gates:
 Without both packing head files, never enter Step 4. Without all assembly files,
 never submit final input generation.
 
-## Maintain V6 Run State
+## Maintain v2.1 Run State
 
-Create `RUN_STATE.json` from `templates/RUN_STATE_TEMPLATE.json`. Keep these
-axes independent:
+Create `RUN_STATE.json` from `templates/RUN_STATE_TEMPLATE.json` and append
+sanitized actions to `EVIDENCE_LEDGER.jsonl`. Keep these axes independent:
 
 - `auth_state`: authentication state;
 - `browser_state`: connection/native-dialog state;
 - `page_state`: visible page state;
 - `backend_state`: backend scientific state;
 - `download_state`: artifact acquisition state;
-- `closure_gates`: archive, package, custom ligand, and strict preprocessing.
+- `submission_state`: not submitted, submitted, or submission uncertain;
+- `closure_gates`: archive, package, custom ligand, and strict preprocessing;
+- `approval_stages`: contract, orientation, exception/drift, and final technical.
 
 Use `classify_charmmgui_state.py` after every page observation or backend probe.
 Use `continuation_guard.py` before yielding. Exit code `20` means continue; it
 is not a failed test.
 
+For any v2.1 browser or API side effect, invoke these tools with the locked
+contract, signed authorization, OS-vault provider, and signing reference. Never
+trust editable `authorization_state` or `authorized_actions` fields in
+`RUN_STATE.json` as cryptographic proof. The actual executor must reverify the
+same authorization immediately before the side effect.
+
 Treat backend values beginning with `complete` as backend-complete, but do not
-set `workflow_complete` until the archive and package closure gates pass. For a
-custom ligand, also require custom injection verification. A false completion
-flag must not override failed V6 closure gates.
+set `workflow_complete` until backend completion, archive inspection, package
+validation, and strict `grompp` closure gates pass. For a custom ligand, also
+require custom injection verification. A false completion flag must not override
+failed v2.1 closure gates. Migrate an older V6 state only
+with `migrate_v1_state.py`; keep the source unchanged and reconfirm every
+Critical unknown before creating a locked contract.
 
 ## Recover Without Duplicate Submission
 
@@ -334,8 +411,8 @@ the segment strategy and regenerate the CHARMM-GUI package instead of using
 
 ## Apply Staged Approval
 
-Use `templates/STAGED_APPROVAL_TEMPLATE.yaml` and leave every unapproved item
-false.
+Append approval records to `APPROVAL_LEDGER.jsonl`, bound to the current
+contract and evidence hashes. Leave every unapproved item pending.
 
 1. Pre-submit approval: ligand state, optimized candidate, segmentation,
    missing-residue strategy, key ions, and membrane composition.
@@ -343,18 +420,19 @@ false.
    are reviewed.
 3. Final technical approval: only after real archive, package, custom injection,
    and strict preprocessing gates pass.
-4. Production approval: only when an authorized expert explicitly sets
-   `production_allowed: true`.
+4. Production policy: remains outside automatic technical validation and
+   requires a separately authorized expert decision.
 
 Even a technical pass is not binding-site evidence. A starting pose and one
 membrane build do not prove the real binding site.
 
 ## Hand Off To Another Agent Safely
 
-Provide the exact job ID, step, resume URL, one allowed action, forbidden
-actions, artifact gate, screenshot/JSON requirement, wait interval, and stop
-conditions. Never provide credentials. Require the other agent to preserve the
-submitted-action lock and production blockers.
+Provide the contract hash, exact job ID, step, route, maturity, resume URL, one
+allowed action, forbidden actions, artifact gate, screenshot/JSON requirement,
+wait interval, and stop conditions. Never provide credentials. Require the
+other agent to preserve the submission lock, authorization scope, and production
+blockers.
 
 ## Maintain The Skill
 
@@ -362,7 +440,10 @@ Before updating this skill, make a complete timestamped backup. Keep the core
 `SKILL.md` platform-neutral and update adapters instead of creating divergent
 platform copies. Record new
 failure modes in `examples/known_failure_modes.md` and new cases in
-`examples/case_index.md`. Do not store credentials, browser state, cookies,
-tokens, or authentication HTML. Validate scripts, unit tests, positive/negative
-archive fixtures, `scripts/validate_skill_package.py`, and the official
-`skills-ref` validator before considering an update complete.
+`examples/case_index.md`. Community reports may propose a rule change but never
+change recommendations automatically; use the templates under `community/` and
+the maturity gates in `docs/COMMUNITY_VALIDATION.md`. Do not store credentials,
+browser state, cookies, tokens, authentication HTML, or unauthorized private
+structures. Validate scripts, unit tests, positive/negative archive fixtures,
+`scripts/validate_skill_package.py`, and the official `skills-ref` validator
+before considering an update complete.

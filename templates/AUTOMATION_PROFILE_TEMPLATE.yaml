@@ -1,6 +1,6 @@
 profile: unattended_candidate
 continuous_execution:
-  schema_version: 6
+  schema_version: "2.1"
   enabled: true
   consume_ready_routine_action_immediately: true
   keep_task_alive_during_backend_wait: true
@@ -18,6 +18,10 @@ browser:
   create_separate_profile: false
 login:
   default_mode: manual
+  optional_credential_provider: macos-keychain
+  credential_storage_is_opt_in: true
+  credential_reference_only_in_run_files: true
+  jwt_memory_only: true
   allow_native_password_autofill_click: false
   allow_submit_after_native_autofill: false
   authorization_destination: https://www.charmm-gui.org/
@@ -64,4 +68,7 @@ safety:
   production_ready: false
   no_mdrun: true
   no_maxwarn: true
-  no_credential_storage: true
+  no_plaintext_credential_storage: true
+  no_browser_cookie_extraction: true
+  saved_credentials_do_not_authorize_submission: true
+  require_content_bound_execution_authorization: true

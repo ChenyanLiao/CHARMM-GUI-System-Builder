@@ -8,8 +8,13 @@ Install the package as
 
 ## Tool Mapping
 
-- Use Claude Code file and shell capabilities for manifests, validators, and
-  read-only archive inspection.
+Fill the run-local runtime capability manifest first; do not treat Claude Code,
+Cowork, cloud, and local sessions as capability-equivalent runtimes.
+
+- Use Claude Code file and shell capabilities for input audits, parameter
+  inventory, contract locking, validators, and read-only archive inspection.
+- Use the official API client only when network access, an approved credential
+  provider, and a valid execution authorization are all available.
 - Local Claude Code does not guarantee an authenticated browser controller.
   Use a browser MCP, Playwright integration, or computer-use capability only
   when the operator has explicitly configured and trusted it.
@@ -21,4 +26,5 @@ Install the package as
 
 Claude cloud and Cowork sessions do not automatically inherit workstation
 skills or browser sessions. Treat them as separate runtimes and re-check all
-capabilities before claiming local file or website access.
+capabilities before claiming local file or website access. Do not transfer a
+Keychain item, signing key, browser profile, or authorization to a cloud host.

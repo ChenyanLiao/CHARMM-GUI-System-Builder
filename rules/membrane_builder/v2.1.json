@@ -1,0 +1,279 @@
+{
+  "schema_version": "2.1",
+  "module": "membrane_builder",
+  "parameters": [
+    {
+      "parameter_id": "membrane.orientation",
+      "module": "membrane_builder",
+      "page_or_step": "step2_orientation",
+      "value_type": "enum",
+      "available_options": ["ppm", "opm_reference", "reviewed_input_orientation"],
+      "default": "ppm",
+      "risk_level": "Critical",
+      "temporary_assumption_allowed": false,
+      "recommendation_reason": "A transmembrane protein orientation must be visually and geometrically reviewed.",
+      "evidence": [
+        {"source": "approved_target_profile", "path": "target_profile.approved_parameters.membrane.orientation", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "membrane.lipid_option",
+      "module": "membrane_builder",
+      "page_or_step": "step2_system_size",
+      "value_type": "enum",
+      "available_options": ["heterogeneous"],
+      "default": "heterogeneous",
+      "risk_level": "Routine",
+      "recommendation_reason": "Use the supported heterogeneous composition path."
+    },
+    {
+      "parameter_id": "membrane.box_type",
+      "module": "membrane_builder",
+      "page_or_step": "step2_system_size",
+      "value_type": "enum",
+      "available_options": ["rectangular", "hexagonal"],
+      "default": "rectangular",
+      "risk_level": "Routine",
+      "recommendation_reason": "Rectangular is the conservative cross-engine default."
+    },
+    {
+      "parameter_id": "membrane.water_thickness_angstrom",
+      "module": "membrane_builder",
+      "page_or_step": "step2_system_size",
+      "value_type": "number",
+      "available_options": [],
+      "default": 22.5,
+      "risk_level": "Contextual",
+      "recommendation_reason": "Use the documented default unless protein dimensions or experimental design require more solvent.",
+      "evidence": [
+        {"source": "approved_target_profile", "path": "target_profile.approved_parameters.membrane.water_thickness_angstrom", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "membrane.z_length_basis",
+      "module": "membrane_builder",
+      "page_or_step": "step2_system_size",
+      "value_type": "enum",
+      "available_options": ["water_thickness", "hydration_number"],
+      "default": "water_thickness",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Choose one Z-size basis explicitly; do not assume the visible numeric field is active."
+    },
+    {
+      "parameter_id": "membrane.hydration_number",
+      "module": "membrane_builder",
+      "page_or_step": "step2_system_size",
+      "value_type": "number",
+      "available_options": [],
+      "default": 50,
+      "risk_level": "Contextual",
+      "recommendation_reason": "This value matters only when hydration-number sizing is selected and must be recorded as inactive otherwise."
+    },
+    {
+      "parameter_id": "membrane.xy_length_basis",
+      "module": "membrane_builder",
+      "page_or_step": "step2_system_size",
+      "value_type": "enum",
+      "available_options": ["lipid_component_ratios", "lipid_component_numbers"],
+      "default": "lipid_component_ratios",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Ratio and number modes produce different packing targets and must not be conflated."
+    },
+    {
+      "parameter_id": "membrane.xy_initial_guess_angstrom",
+      "module": "membrane_builder",
+      "page_or_step": "step2_system_size",
+      "value_type": "number",
+      "available_options": [],
+      "risk_level": "Contextual",
+      "recommendation_reason": "Record the calculated initial X/Y guess and review it against protein footprint and lipid counts.",
+      "evidence": [
+        {"source": "input_audit", "path": "input_audit.membrane.xy_initial_guess_angstrom", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "membrane.lipid_input_mode",
+      "module": "membrane_builder",
+      "page_or_step": "step2_lipid_composition",
+      "value_type": "enum",
+      "available_options": ["ratio", "number"],
+      "default": "ratio",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Record whether leaflet entries are ratios or absolute lipid counts."
+    },
+    {
+      "parameter_id": "membrane.upper_leaflet",
+      "module": "membrane_builder",
+      "page_or_step": "step2_lipid_composition",
+      "value_type": "composition",
+      "available_options": [],
+      "default": "POPC:CHL1=70:30",
+      "risk_level": "Contextual",
+      "recommendation_reason": "The default is only a generic test profile; use target evidence when available.",
+      "evidence": [
+        {"source": "user_experimental_condition", "path": "run_request.experimental_conditions.membrane.upper_leaflet", "confidence": "high"},
+        {"source": "approved_target_profile", "path": "target_profile.approved_parameters.membrane.upper_leaflet", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "membrane.lower_leaflet",
+      "module": "membrane_builder",
+      "page_or_step": "step2_lipid_composition",
+      "value_type": "composition",
+      "available_options": [],
+      "default": "POPC:CHL1=70:30",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Symmetry is a starting assumption, not a biological universal.",
+      "evidence": [
+        {"source": "user_experimental_condition", "path": "run_request.experimental_conditions.membrane.lower_leaflet", "confidence": "high"},
+        {"source": "approved_target_profile", "path": "target_profile.approved_parameters.membrane.lower_leaflet", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "membrane.leaflet_symmetry",
+      "module": "membrane_builder",
+      "page_or_step": "step2_lipid_composition",
+      "value_type": "boolean",
+      "available_options": [true, false],
+      "default": true,
+      "risk_level": "Contextual",
+      "recommendation_reason": "Symmetric leaflets are a generic starting assumption; biological asymmetry requires target evidence."
+    },
+    {
+      "parameter_id": "membrane.protein_projection_upper",
+      "module": "membrane_builder",
+      "page_or_step": "step2_system_size",
+      "value_type": "boolean",
+      "available_options": [false, true],
+      "default": false,
+      "risk_level": "Routine",
+      "recommendation_reason": "Enable projection only when geometry makes it necessary."
+    },
+    {
+      "parameter_id": "membrane.protein_projection_lower",
+      "module": "membrane_builder",
+      "page_or_step": "step2_system_size",
+      "value_type": "boolean",
+      "available_options": [false, true],
+      "default": false,
+      "risk_level": "Routine",
+      "recommendation_reason": "Lower-leaflet projection is not a routine default."
+    },
+    {
+      "parameter_id": "membrane.ions.type",
+      "module": "membrane_builder",
+      "page_or_step": "step3_ions_solvent",
+      "value_type": "enum",
+      "available_options": ["NaCl", "KCl", "other_reviewed"],
+      "default": "NaCl",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Choose salt from experimental conditions; NaCl is only a generic physiological starting point.",
+      "evidence": [
+        {"source": "user_experimental_condition", "path": "run_request.experimental_conditions.salt.type", "confidence": "high"},
+        {"source": "approved_target_profile", "path": "target_profile.approved_parameters.membrane.ions.type", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "membrane.ions.concentration_m",
+      "module": "membrane_builder",
+      "page_or_step": "step3_ions_solvent",
+      "value_type": "number",
+      "available_options": [],
+      "default": 0.15,
+      "risk_level": "Contextual",
+      "recommendation_reason": "Use experimental ionic strength when known.",
+      "evidence": [
+        {"source": "user_experimental_condition", "path": "run_request.experimental_conditions.salt.concentration_m", "confidence": "high"},
+        {"source": "approved_target_profile", "path": "target_profile.approved_parameters.membrane.ions.concentration_m", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "membrane.ions.internal_names",
+      "module": "membrane_builder",
+      "page_or_step": "step3_ions_solvent",
+      "value_type": "object",
+      "available_options": ["SOD/CLA", "POT/CLA", "reviewed_other"],
+      "default": "SOD/CLA",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Visible salt and hidden/internal ion names must agree."
+    },
+    {
+      "parameter_id": "membrane.ions.placement_method",
+      "module": "membrane_builder",
+      "page_or_step": "step3_ions_solvent",
+      "value_type": "enum",
+      "available_options": ["distance", "monte_carlo"],
+      "default": "distance",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Record the actual ion-placement method selected by the page."
+    },
+    {
+      "parameter_id": "membrane.ions.neutralize",
+      "module": "membrane_builder",
+      "page_or_step": "step3_ions_solvent",
+      "value_type": "boolean",
+      "available_options": [true, false],
+      "default": true,
+      "risk_level": "Contextual",
+      "recommendation_reason": "Neutralization and bulk salt concentration are separate choices; both must be explicit."
+    },
+    {
+      "parameter_id": "membrane.ions.visible_hidden_consistent",
+      "module": "membrane_builder",
+      "page_or_step": "step3_ions_solvent",
+      "value_type": "boolean",
+      "available_options": [true],
+      "default": true,
+      "risk_level": "Routine",
+      "recommendation_reason": "Re-read hidden cation and anion values after changing the visible salt control."
+    },
+    {
+      "parameter_id": "membrane.water_model",
+      "module": "membrane_builder",
+      "page_or_step": "step3_ions_solvent",
+      "value_type": "enum",
+      "available_options": ["TIP3P"],
+      "default": "TIP3P",
+      "risk_level": "Routine",
+      "recommendation_reason": "Use the CHARMM-compatible water model."
+    },
+    {
+      "parameter_id": "forcefield.protein",
+      "module": "membrane_builder",
+      "page_or_step": "step5_input_generation",
+      "value_type": "enum",
+      "available_options": ["CHARMM36m", "reviewed_other"],
+      "default": "CHARMM36m",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Keep protein, lipid, ligand, water, and ion models compatible.",
+      "evidence": [
+        {"source": "approved_target_profile", "path": "target_profile.approved_parameters.forcefield.protein", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "forcefield.lipid",
+      "module": "membrane_builder",
+      "page_or_step": "step5_input_generation",
+      "value_type": "enum",
+      "available_options": ["CHARMM36_lipid", "reviewed_other"],
+      "default": "CHARMM36_lipid",
+      "risk_level": "Contextual",
+      "recommendation_reason": "Use a lipid force field compatible with the selected protein and ligand models."
+    },
+    {
+      "parameter_id": "forcefield.ligand",
+      "module": "membrane_builder",
+      "page_or_step": "step5_input_generation",
+      "value_type": "enum",
+      "available_options": ["CGenFF_test_only", "reviewed_custom_CGenFF", "not_applicable"],
+      "default": "not_applicable",
+      "risk_level": "Critical",
+      "recommendation_reason": "The ligand route must match the reviewed parameter source and remain blocked if penalties are unresolved.",
+      "applies_if": {"path": "run_request.system.has_ligand", "equals": true},
+      "evidence": [
+        {"source": "approved_expert", "path": "target_profile.approved_parameters.ligand.forcefield", "confidence": "high"},
+        {"source": "input_audit", "path": "input_audit.ligand.forcefield", "confidence": "high"}
+      ]
+    }
+  ]
+}

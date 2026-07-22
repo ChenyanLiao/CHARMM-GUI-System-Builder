@@ -1,0 +1,152 @@
+{
+  "schema_version": "2.1",
+  "module": "ligand_reader",
+  "parameters": [
+    {
+      "parameter_id": "ligand.chemical_identity",
+      "module": "ligand_reader",
+      "page_or_step": "local_preflight",
+      "value_type": "string",
+      "available_options": [],
+      "risk_level": "Critical",
+      "temporary_assumption_allowed": false,
+      "recommendation_reason": "The submitted ligand must match the reviewed chemical identity.",
+      "evidence": [
+        {"source": "user_experimental_condition", "path": "run_request.system.ligand_identity", "confidence": "high"},
+        {"source": "input_audit", "path": "input_audit.ligand.identity", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "ligand.formal_charge",
+      "module": "ligand_reader",
+      "page_or_step": "local_preflight",
+      "value_type": "integer",
+      "available_options": [],
+      "risk_level": "Critical",
+      "temporary_assumption_allowed": false,
+      "recommendation_reason": "Formal charge is part of chemical identity and force-field preparation.",
+      "evidence": [
+        {"source": "user_experimental_condition", "path": "run_request.system.ligand_formal_charge", "confidence": "medium"},
+        {"source": "input_audit", "path": "input_audit.ligand.formal_charge", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "ligand.protonation",
+      "module": "ligand_reader",
+      "page_or_step": "local_preflight",
+      "value_type": "string",
+      "available_options": [],
+      "risk_level": "Critical",
+      "temporary_assumption_allowed": false,
+      "recommendation_reason": "Protonation must be compatible with identity, pH, and parameterization.",
+      "evidence": [
+        {"source": "approved_expert", "path": "target_profile.approved_parameters.ligand.protonation", "confidence": "high"},
+        {"source": "input_audit", "path": "input_audit.ligand.protonation", "confidence": "medium"}
+      ]
+    },
+    {
+      "parameter_id": "ligand.atom_order_preserved",
+      "module": "ligand_reader",
+      "page_or_step": "local_preflight",
+      "value_type": "boolean",
+      "available_options": [true],
+      "default": true,
+      "risk_level": "Routine",
+      "recommendation_reason": "Preserve reviewed atom names and ordering across formats."
+    },
+    {
+      "parameter_id": "ligand.parameter_source",
+      "module": "ligand_reader",
+      "page_or_step": "ligand_parameterization",
+      "value_type": "enum",
+      "available_options": ["automatic_cgenff_test_only", "reviewed_custom_parameters", "stop_for_parameterization"],
+      "default": "stop_for_parameterization",
+      "risk_level": "Critical",
+      "recommendation_reason": "Automatic CGenFF compatibility is not parameter-quality approval.",
+      "evidence": [
+        {"source": "approved_expert", "path": "target_profile.approved_parameters.ligand.parameter_source", "confidence": "high"},
+        {"source": "input_audit", "path": "input_audit.ligand.parameter_source", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "ligand.residue_name",
+      "module": "ligand_reader",
+      "page_or_step": "local_preflight",
+      "value_type": "string",
+      "available_options": [],
+      "risk_level": "Critical",
+      "temporary_assumption_allowed": false,
+      "recommendation_reason": "The residue name must remain stable across PDB, SDF/MOL2, CHARMM, and GROMACS files.",
+      "evidence": [
+        {"source": "input_audit", "path": "input_audit.ligand.residue_name", "confidence": "high"},
+        {"source": "user_experimental_condition", "path": "run_request.expected_output.ligand.residue_name", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "ligand.explicit_hydrogens",
+      "module": "ligand_reader",
+      "page_or_step": "local_preflight",
+      "value_type": "boolean",
+      "available_options": [true],
+      "default": true,
+      "risk_level": "Contextual",
+      "recommendation_reason": "Submit explicit hydrogens so valence and protonation are auditable."
+    },
+    {
+      "parameter_id": "ligand.bond_orders_verified",
+      "module": "ligand_reader",
+      "page_or_step": "local_preflight",
+      "value_type": "boolean",
+      "available_options": [true],
+      "risk_level": "Critical",
+      "temporary_assumption_allowed": false,
+      "recommendation_reason": "Incorrect bond orders change chemical identity and invalidate parameterization.",
+      "evidence": [
+        {"source": "input_audit", "path": "input_audit.ligand.bond_orders_verified", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "ligand.stereochemistry_verified",
+      "module": "ligand_reader",
+      "page_or_step": "local_preflight",
+      "value_type": "boolean",
+      "available_options": [true],
+      "risk_level": "Critical",
+      "temporary_assumption_allowed": false,
+      "recommendation_reason": "Unreviewed stereochemistry changes the modeled compound.",
+      "evidence": [
+        {"source": "input_audit", "path": "input_audit.ligand.stereochemistry_verified", "confidence": "high"}
+      ]
+    },
+    {
+      "parameter_id": "ligand.atom_names_preserved",
+      "module": "ligand_reader",
+      "page_or_step": "local_preflight",
+      "value_type": "boolean",
+      "available_options": [true],
+      "default": true,
+      "risk_level": "Routine",
+      "recommendation_reason": "Stable atom names are required for custom-parameter injection checks."
+    },
+    {
+      "parameter_id": "ligand.cgenff_penalty_policy",
+      "module": "ligand_reader",
+      "page_or_step": "ligand_parameterization",
+      "value_type": "enum",
+      "available_options": ["stop_if_param_penalty_gt50", "test_only_with_blocker", "optimized_or_expert_approved"],
+      "default": "stop_if_param_penalty_gt50",
+      "risk_level": "Critical",
+      "recommendation_reason": "A high automatic parameter penalty must not be silently promoted to production use."
+    },
+    {
+      "parameter_id": "ligand.custom_parameter_submission",
+      "module": "ligand_reader",
+      "page_or_step": "ligand_parameterization",
+      "value_type": "enum",
+      "available_options": ["website_supported_rtf_prm", "automatic_cgenff_test_only", "stop_if_no_supported_route"],
+      "default": "stop_if_no_supported_route",
+      "risk_level": "Critical",
+      "recommendation_reason": "Custom parameters may be submitted only through a visible, website-supported route and must be verified in the final package."
+    }
+  ]
+}

@@ -1,10 +1,12 @@
 # CHARMM-GUI System Builder
 
-An auditable cross-agent skill and read-only validation toolkit for CHARMM-GUI
-PDB Reader, Ligand Reader, Membrane Builder, Solution Builder, and GROMACS
-package workflows. Version 1.1.1 uses one Agent Skills-compatible core with
-small runtime adapters for Codex, Claude Code, OpenClaw, Hermes Agent, and
-generic Agent Skills clients.
+An auditable cross-agent skill for planning, building, recovering, and
+validating CHARMM-GUI PDB Reader, Ligand Reader, Membrane Builder, Solution
+Builder, Quick Bilayer, and GROMACS workflows. Version 2.1.0 adds a complete
+parameter inventory, risk-ranked recommendations, immutable build contracts,
+documented official-API routing, opt-in OS-vault credentials, and
+contract-derived output validation while retaining one Agent Skills-compatible
+core for Codex, Claude Code, OpenClaw, Hermes Agent, and generic clients.
 
 > **Unofficial project:** this repository is not affiliated with or endorsed by
 > the CHARMM-GUI team, Im Lab, or Lehigh University.
@@ -13,12 +15,20 @@ generic Agent Skills clients.
 
 CHARMM-GUI workflows cross several independent failure boundaries: dynamic
 browser forms, asynchronous backend jobs, browser downloads, archive formats,
-force-field conversion, topology integrity, and scientific approval. This skill
-keeps those boundaries separate and records evidence before advancing.
+force-field conversion, topology integrity, and scientific approval. They also
+contain many linked scientific choices that should not be silently inherited
+from a page default. This skill explains and freezes those choices before it
+acts, then keeps each execution and validation boundary separate.
 
 It is designed to prevent common false positives such as:
 
 - treating a visible Step 6 page as a validated package;
+- asking for only one salt number while ignoring species, internal ion names,
+  neutralization, and experimental conditions;
+- silently using a default for ligand identity, protein segmentation, or
+  membrane orientation;
+- inventing full-builder API support from undocumented page requests;
+- duplicating a job after an uncertain POST or stale browser response;
 - treating an HTML response named `.tgz` as an archive;
 - assuming Safari's `.tar` output is corrupt because the page said `.tgz`;
 - advancing before required PSF/CRD products exist;
@@ -31,6 +41,15 @@ It is designed to prevent common false positives such as:
 ## Capabilities
 
 - audited PDB and ligand input preparation;
+- system-specific parameter dependency expansion;
+- Routine, Contextual, and Critical decision records with evidence and
+  conflict escalation;
+- immutable, hashed build contracts and append-only approval/evidence ledgers;
+- registry-backed official API routing for documented login, status, download,
+  and Quick Bilayer capabilities;
+- audited-browser fallback for full interactive builders;
+- optional macOS Keychain or system-keyring Credential Broker with separate,
+  expiring, one-submission authorization;
 - explicit protein segmentation and submission-PDB checks;
 - browser and backend state separation;
 - low-frequency job recovery without duplicate submissions;
@@ -41,8 +60,10 @@ It is designed to prevent common false positives such as:
 - strict, non-production status vocabulary;
 - reusable checklists, templates, synthetic fixtures, and failure records.
 
-The scripts do **not** log in, read browser credentials, submit CHARMM-GUI jobs,
-run production MD, or run `gmx mdrun`.
+Most scripts remain read-only. The official API client can log in, query,
+download, or submit Quick Bilayer only behind explicit live-action and
+authorization gates. No script extracts browser credentials, supports
+undocumented builder endpoints, runs production MD, or runs `gmx mdrun`.
 
 ## Cross-Agent Support
 
@@ -59,7 +80,11 @@ do not duplicate or weaken the scientific gates.
 | Other Agent Skills clients | Supported for instruction loading and local validation | Capability-dependent |
 
 See the full [capability matrix](docs/CAPABILITY_MATRIX.md) and
-[cross-agent architecture](docs/CROSS_AGENT_ARCHITECTURE.md).
+[cross-agent architecture](docs/CROSS_AGENT_ARCHITECTURE.md). API scope,
+credential safety, and maturity evidence are documented separately in
+[API_CAPABILITY_REGISTRY.md](docs/API_CAPABILITY_REGISTRY.md),
+[CREDENTIAL_SECURITY.md](docs/CREDENTIAL_SECURITY.md), and
+[COMMUNITY_VALIDATION.md](docs/COMMUNITY_VALIDATION.md).
 
 The distribution follows the [Agent Skills specification](https://agentskills.io/specification).
 Runtime behavior is documented against the official
@@ -78,7 +103,7 @@ skill documentation.
 Quick Codex install:
 
 ```bash
-git clone --branch v1.1.1 --depth 1 \
+git clone --branch v2.1.0 --depth 1 \
   https://github.com/ChenyanLiao/CHARMM-GUI-System-Builder.git \
   ~/.codex/skills/charmm-gui-system-builder
 ```
@@ -93,7 +118,7 @@ library.
 
 ```bash
 python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
-python3 -m compileall -q scripts
+python3 -m compileall -q core scripts
 python3 scripts/validate_skill_package.py .
 ```
 
@@ -108,11 +133,17 @@ against an installed copy.
 python3 scripts/inspect_charmmgui_download.py /path/to/download \
   --json-out /path/to/download_inspection.json
 
+python3 scripts/prepare_build_contract.py /path/to/RUN_REQUEST.yaml \
+  --target-profile /path/to/TARGET_PROFILE.yaml \
+  --input-audit /path/to/INPUT_AUDIT.json \
+  --answers /path/to/DECISION_ANSWERS.json \
+  --outdir /path/to/contract_review --lock-if-ready
+
+python3 scripts/charmmgui_api_client.py capabilities
+
 python3 scripts/validate_charmmgui_package.py /path/to/archive \
   --outdir /path/to/reports \
-  --require-ligand \
-  --expected-ligand-charge 1 \
-  --component-profile example-9segment-membrane
+  --build-contract /path/to/APPROVED_BUILD_CONTRACT.json
 
 python3 scripts/verify_custom_ligand_injection.py \
   --frozen-dir /path/to/frozen_ligand_parameters \
@@ -122,10 +153,13 @@ python3 scripts/verify_custom_ligand_injection.py \
 
 ## Status Boundary
 
-A script pass means at most `Technical_Pass_Not_Production_Approval`.
-Production still requires reviewed molecular identity, protonation, ligand
+A package-validator pass means only `Candidate_Package_Validated`. The later
+`Technical_Pass_Not_Production_Approval` state additionally requires strict
+`grompp` and any applicable custom-ligand injection gate. Production still
+requires reviewed molecular identity, protonation, ligand
 parameters, protein segmentation, orientation, topology preprocessing, and
-explicit expert approval. A prepared structure is not binding-site evidence.
+explicit expert approval. A saved credential or signed test-only authorization
+does not clear those gates. A prepared structure is not binding-site evidence.
 
 ## Authorship And Canonical Source
 

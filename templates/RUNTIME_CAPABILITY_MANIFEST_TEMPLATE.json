@@ -1,0 +1,32 @@
+{
+  "schema_version": "2.1",
+  "runtime_id": "",
+  "selected_adapter": "generic_agent_skills",
+  "captured_at": "",
+  "capabilities": {
+    "file_read": {"status": "unknown", "evidence": ""},
+    "file_write_run_directory_only": {"status": "unknown", "evidence": ""},
+    "command_execution": {"status": "unknown", "evidence": ""},
+    "browser_control": {"status": "unknown", "evidence": ""},
+    "page_state_capture": {"status": "unknown", "evidence": ""},
+    "screenshots": {"status": "unknown", "evidence": ""},
+    "file_upload": {"status": "unknown", "evidence": ""},
+    "download_control": {"status": "unknown", "evidence": ""},
+    "native_dialog_control": {"status": "unknown", "evidence": ""},
+    "official_api_network": {"status": "unknown", "evidence": ""},
+    "os_credential_vault": {"status": "unknown", "evidence": ""},
+    "durable_wait_resume": {"status": "unknown", "evidence": ""}
+  },
+  "operator_only_gates": [
+    "initial credential enrollment",
+    "MFA",
+    "CAPTCHA",
+    "terms or account challenge",
+    "unavailable native dialog",
+    "scientific Critical decision without an approved temporary test-only assumption"
+  ],
+  "selected_execution_route": "unresolved",
+  "route_maturity": "unresolved",
+  "production_ready": false,
+  "no_mdrun": true
+}

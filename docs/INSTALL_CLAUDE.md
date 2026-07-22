@@ -3,7 +3,7 @@
 ## Personal Installation
 
 ```bash
-git clone --branch v1.1.1 --depth 1 \
+git clone --branch v2.1.0 --depth 1 \
   https://github.com/ChenyanLiao/CHARMM-GUI-System-Builder.git \
   ~/.claude/skills/charmm-gui-system-builder
 ```

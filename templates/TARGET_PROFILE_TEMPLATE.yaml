@@ -1,0 +1,42 @@
+{
+  "schema_version": "2.1",
+  "target_id": "",
+  "description": "",
+  "approved_parameters": {
+    "protein": {
+      "segmentation": null,
+      "missing_residue_strategy": null
+    },
+    "pdb": {
+      "old_bulk_water_policy": "remove",
+      "old_bulk_ion_policy": "remove",
+      "key_ion_strategy": null
+    },
+    "ligand": {
+      "protonation": null,
+      "parameter_source": null,
+      "forcefield": null
+    },
+    "membrane": {
+      "orientation": null,
+      "z_length_basis": "water_thickness",
+      "upper_leaflet": null,
+      "lower_leaflet": null,
+      "leaflet_symmetry": null,
+      "xy_length_basis": null,
+      "lipid_input_mode": null,
+      "water_thickness_angstrom": null,
+      "ions": {
+        "type": null,
+        "concentration_m": null,
+        "placement_method": null,
+        "neutralize": null
+      }
+    },
+    "forcefield": {
+      "protein": null
+    }
+  },
+  "production_ready": false,
+  "no_mdrun": true
+}

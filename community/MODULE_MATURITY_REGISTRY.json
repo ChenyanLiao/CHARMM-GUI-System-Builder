@@ -1,0 +1,89 @@
+{
+  "schema_version": "2.1",
+  "updated": "2026-07-21",
+  "stable_promotion_requires_external_groups": 2,
+  "modules": [
+    {
+      "module": "guided_decision_and_contracts",
+      "maturity": "Beta",
+      "offline_tests": true,
+      "maintainer_reproduced": true,
+      "external_groups": 0,
+      "unresolved_high_severity": 0
+    },
+    {
+      "module": "official_api_login_status_download",
+      "maturity": "Beta",
+      "offline_tests": true,
+      "maintainer_reproduced": false,
+      "external_groups": 0,
+      "unresolved_high_severity": 0
+    },
+    {
+      "module": "official_api_quick_bilayer",
+      "maturity": "Beta",
+      "offline_tests": true,
+      "maintainer_reproduced": false,
+      "external_groups": 0,
+      "unresolved_high_severity": 0
+    },
+    {
+      "module": "pdb_reader_submission",
+      "maturity": "Browser-Assisted",
+      "offline_tests": true,
+      "maintainer_reproduced": true,
+      "external_groups": 0,
+      "unresolved_high_severity": 0
+    },
+    {
+      "module": "ligand_reader_submission",
+      "maturity": "Browser-Assisted",
+      "offline_tests": true,
+      "maintainer_reproduced": true,
+      "external_groups": 0,
+      "unresolved_high_severity": 0
+    },
+    {
+      "module": "membrane_builder_submission",
+      "maturity": "Browser-Assisted",
+      "offline_tests": true,
+      "maintainer_reproduced": true,
+      "external_groups": 0,
+      "unresolved_high_severity": 0
+    },
+    {
+      "module": "solution_builder_submission",
+      "maturity": "Browser-Assisted",
+      "offline_tests": true,
+      "maintainer_reproduced": false,
+      "external_groups": 0,
+      "unresolved_high_severity": 0
+    },
+    {
+      "module": "download_archive_inspection",
+      "maturity": "Beta",
+      "offline_tests": true,
+      "maintainer_reproduced": true,
+      "external_groups": 0,
+      "unresolved_high_severity": 0
+    },
+    {
+      "module": "gromacs_package_validation",
+      "maturity": "Beta",
+      "offline_tests": true,
+      "maintainer_reproduced": true,
+      "external_groups": 0,
+      "unresolved_high_severity": 0
+    },
+    {
+      "module": "custom_ligand_injection_validation",
+      "maturity": "Beta",
+      "offline_tests": true,
+      "maintainer_reproduced": true,
+      "external_groups": 0,
+      "unresolved_high_severity": 0
+    }
+  ],
+  "production_ready": false,
+  "no_mdrun": true
+}

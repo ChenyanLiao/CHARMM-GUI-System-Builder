@@ -8,10 +8,21 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from fnmatch import fnmatch
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import urlparse
+
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from core.approvals import verify_authorization  # noqa: E402
+from core.contracts import validate_contract  # noqa: E402
+from core.credentials import CredentialBroker, create_secret_store  # noqa: E402
+from core.io import load_structured  # noqa: E402
+from core.schema import SchemaError  # noqa: E402
 
 
 HUMAN_AUTH_STATES = {
@@ -48,7 +59,75 @@ LOCAL_ACTIONS = {
     "VERIFY_CUSTOM_LIGAND_INJECTION",
     "RUN_STRICT_GROMPP",
 }
-ROUTINE_ACTIONS = BROWSER_ACTIONS | LOCAL_ACTIONS
+API_ACTIONS = {
+    "SUBMIT_QUICK_BILAYER",
+    "API_CHECK_STATUS",
+    "API_DOWNLOAD_FINAL_PACKAGE",
+}
+ROUTINE_ACTIONS = BROWSER_ACTIONS | API_ACTIONS | LOCAL_ACTIONS
+
+
+def cryptographically_verified_actions(
+    *,
+    state: dict,
+    contract: dict,
+    authorization: dict,
+    signing_key: bytes,
+) -> set[str]:
+    """Return only actions covered by a valid signed authorization."""
+    validate_contract(contract, require_locked=True)
+    if state.get("contract_sha256") != contract["contract_sha256"]:
+        raise SchemaError("run state belongs to a different build contract")
+    verified: set[str] = set()
+    for raw_action in authorization.get("allowed_actions", []):
+        action = str(raw_action)
+        ok, _reason = verify_authorization(
+            authorization,
+            signing_key=signing_key,
+            contract_sha256=contract["contract_sha256"],
+            action=action,
+            side_effecting_submission=action.upper().startswith("SUBMIT_"),
+            submissions_used=int(state.get("submissions_used", 0)),
+        )
+        if ok:
+            verified.add(action.upper())
+    return verified
+
+
+def load_verified_actions(args: argparse.Namespace, state: dict) -> set[str]:
+    supplied = [args.contract, args.authorization, args.provider, args.signing_ref]
+    if not any(supplied):
+        return set()
+    if not all(supplied):
+        raise SchemaError(
+            "--contract, --authorization, --provider, and --signing-ref are required together"
+        )
+    signing_key = CredentialBroker(create_secret_store(args.provider)).get_signing_key(
+        args.signing_ref
+    )
+    return cryptographically_verified_actions(
+        state=state,
+        contract=load_structured(args.contract),
+        authorization=load_structured(args.authorization),
+        signing_key=signing_key,
+    )
+
+
+def action_is_authorized(
+    state: dict, action: str, verified_actions: set[str] | None = None
+) -> bool:
+    action = action.upper()
+    if action in LOCAL_ACTIONS:
+        return True
+    if str(state.get("schema_version", "")) != "2.1":
+        legacy = ROUTINE_ACTIONS | {
+            str(item).upper() for item in (state.get("autonomous_actions") or [])
+        }
+        return action in legacy
+    return bool(
+        state.get("contract_sha256")
+        and action in {item.upper() for item in (verified_actions or set())}
+    )
 
 
 def backend_is_complete(value: str) -> bool:
@@ -59,7 +138,15 @@ def closure_gates_pass(state: dict) -> bool:
     gates = state.get("closure_gates") or {}
     if not gates:
         return bool(state.get("workflow_complete"))
-    base = bool(gates.get("archive_verified") and gates.get("package_validated"))
+    if str(state.get("schema_version", "")) == "2.1":
+        base = bool(
+            gates.get("builder_backend_complete")
+            and gates.get("archive_verified")
+            and gates.get("package_validated")
+            and gates.get("strict_grompp_passed")
+        )
+    else:
+        base = bool(gates.get("archive_verified") and gates.get("package_validated"))
     if state.get("custom_ligand_expected"):
         base = base and bool(gates.get("custom_ligand_verified"))
     return base
@@ -109,11 +196,22 @@ def content_length(row: dict | None) -> int | None:
         return None
 
 
-def classify(state: dict, current_probe: dict, previous_probe: dict) -> dict:
+def classify(
+    state: dict,
+    current_probe: dict,
+    previous_probe: dict,
+    *,
+    verified_actions: set[str] | None = None,
+) -> dict:
     now = datetime.now(timezone.utc)
     current = probe_rows(current_probe)
     previous = probe_rows(previous_probe)
-    required = [Path(x).name for x in state.get("required_products", [])]
+    artifact_progress = state.get("artifact_progress") or {}
+    polling = state.get("polling") or {}
+    required_products = artifact_progress.get(
+        "required_products", state.get("required_products", [])
+    )
+    required = [Path(x).name for x in required_products]
     present = sorted(
         pattern
         for pattern in required
@@ -142,25 +240,46 @@ def classify(state: dict, current_probe: dict, previous_probe: dict) -> dict:
     backend_state = str(state.get("backend_state", "unknown")).lower()
     current_step = str(state.get("current_step", "")).upper()
     next_action = effective_next_action(state)
-    autonomous_actions = ROUTINE_ACTIONS | {
-        str(action).upper() for action in (state.get("autonomous_actions") or [])
-    }
     human_gate = state.get("human_gate") or {}
     fatal_errors = state.get("fatal_errors") or []
-    transient_count = int(state.get("transient_failure_count", 0) or 0)
-    transient_limit = int(state.get("transient_failure_limit", 3) or 3)
-    unchanged_count = int(state.get("consecutive_unchanged_polls", 0) or 0)
+    transient_count = int(
+        polling.get(
+            "transient_failure_count", state.get("transient_failure_count", 0)
+        )
+        or 0
+    )
+    transient_limit = int(
+        polling.get(
+            "transient_failure_limit", state.get("transient_failure_limit", 3)
+        )
+        or 3
+    )
+    unchanged_count = int(
+        polling.get(
+            "consecutive_unchanged_polls",
+            state.get("consecutive_unchanged_polls", 0),
+        )
+        or 0
+    )
+    submission_state = str(state.get("submission_state", "")).lower()
+    runtime_state = str(state.get("runtime_state", "")).lower()
 
     decision = "INSPECT_CURRENT_PAGE"
     reason = "No deterministic continuation gate has passed."
     needs_user = False
     poll_seconds = 0
 
-    if fatal_errors or backend_state == "fatal":
+    if submission_state == "submission_uncertain":
+        decision = "STOP_SUBMISSION_UNCERTAIN"
+        reason = "Submission may have created a job; inspect existing jobs before retrying."
+        needs_user = True
+    elif fatal_errors or backend_state == "fatal" or runtime_state == "technical_fail":
         decision = "STOP_FATAL"
         reason = "A fatal backend or recorded run error requires review."
         needs_user = True
-    elif closure_gates_pass(state) and state.get("workflow_complete"):
+    elif closure_gates_pass(state) and (
+        state.get("workflow_complete") or runtime_state == "technical_pass"
+    ):
         decision = "WORKFLOW_COMPLETE"
         reason = "Archive, package, and required custom-ligand closure gates passed."
     elif auth_state in HUMAN_AUTH_STATES:
@@ -171,20 +290,41 @@ def classify(state: dict, current_probe: dict, previous_probe: dict) -> dict:
         decision = "WAIT_FOR_HUMAN_REVIEW"
         reason = human_gate.get("reason") or "A defined scientific human gate is active."
         needs_user = True
+    elif runtime_state == "waiting_user_or_authorized_action":
+        decision = "WAIT_FOR_AUTHORIZED_ACTION"
+        reason = state.get("status_reason") or "A staged action or approval is required."
+        needs_user = True
     elif state.get("needs_user_attention"):
         decision = "WAIT_FOR_HUMAN_REVIEW"
         reason = state.get("status_reason") or "The run explicitly requires user attention."
         needs_user = True
-    elif next_action in LOCAL_ACTIONS and next_action in autonomous_actions:
+    elif (
+        next_action in (BROWSER_ACTIONS | API_ACTIONS)
+        and not action_is_authorized(state, next_action, verified_actions)
+    ):
+        decision = "WAIT_FOR_AUTHORIZED_ACTION"
+        reason = f"{next_action} is outside the current execution authorization."
+        needs_user = True
+    elif next_action in LOCAL_ACTIONS and action_is_authorized(
+        state, next_action, verified_actions
+    ):
         decision = "ADVANCE_ONE_STEP"
         reason = f"Local read-only action {next_action} is ready and does not require browser state."
+    elif (
+        auth_state == "authenticated"
+        and backend_state == "not_submitted"
+        and next_action in API_ACTIONS
+        and action_is_authorized(state, next_action, verified_actions)
+    ):
+        decision = "ADVANCE_ONE_STEP"
+        reason = f"Authorized official API action {next_action} is ready."
     elif (
         auth_state == "authenticated"
         and browser_state == "connected"
         and page_state == "ready"
         and backend_state == "not_submitted"
         and not state.get("next_clicked")
-        and next_action in autonomous_actions
+        and action_is_authorized(state, next_action, verified_actions)
     ):
         decision = "ADVANCE_ONE_STEP"
         reason = (
@@ -194,7 +334,7 @@ def classify(state: dict, current_probe: dict, previous_probe: dict) -> dict:
     elif backend_is_complete(backend_state):
         if (
             next_action in BROWSER_ACTIONS
-            and next_action in autonomous_actions
+            and action_is_authorized(state, next_action, verified_actions)
             and auth_state == "authenticated"
             and browser_state == "connected"
             and page_state in {"ready", "complete", "final_page"}
@@ -247,6 +387,8 @@ def classify(state: dict, current_probe: dict, previous_probe: dict) -> dict:
         "next_allowed_action": next_action,
         "recorded_next_allowed_action": state.get("next_allowed_action", ""),
         "download_state": state.get("download_state", "unknown"),
+        "runtime_state": runtime_state or "legacy",
+        "submission_state": submission_state or "legacy",
         "decision": decision,
         "reason": reason,
         "needs_user_attention": needs_user,
@@ -265,12 +407,20 @@ def main() -> None:
     parser.add_argument("--probe-current", type=Path)
     parser.add_argument("--probe-previous", type=Path)
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--contract", type=Path)
+    parser.add_argument("--authorization", type=Path)
+    parser.add_argument(
+        "--provider", choices=("macos-keychain", "system-keyring")
+    )
+    parser.add_argument("--signing-ref")
     args = parser.parse_args()
 
+    state = read_json(args.run_state)
     report = classify(
-        read_json(args.run_state),
+        state,
         read_json(args.probe_current),
         read_json(args.probe_previous),
+        verified_actions=load_verified_actions(args, state),
     )
     text = json.dumps(report, ensure_ascii=False, indent=2)
     if args.out:
