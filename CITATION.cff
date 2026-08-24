@@ -5,8 +5,8 @@ type: software
 authors:
   - family-names: "Liao"
     given-names: "Chenyan"
-version: "2.1.0"
-date-released: 2026-07-22
+version: "2.2.0"
+date-released: 2026-08-24
 repository-code: "https://github.com/ChenyanLiao/CHARMM-GUI-System-Builder"
 url: "https://github.com/ChenyanLiao/CHARMM-GUI-System-Builder"
 license: "AGPL-3.0-only"

@@ -1,0 +1,11 @@
+record_type: restraint-handoff
+schema_version: "1.0"
+restraint_files: []
+referenced_macros: []
+defined_macros: []
+equilibration_schedule: []
+expected_production_define: ""
+ligand_heavy_atom_restraints: []
+downstream_release_validation_required: true
+production_ready: false
+no_mdrun: true

@@ -1,0 +1,20 @@
+record_type: system-build-receipt
+schema_version: "2.0"
+receipt_id: ""
+pipeline_id: ""
+branch_id: ""
+revision: 1
+status: TECHNICAL_PASS_NOT_PRODUCTION_APPROVAL
+permissions:
+  md_execution_allowed: false
+  production_ready: false
+no_mdrun: true
+scientific_context:
+  structural_environment:
+    status: NOT_APPLICABLE
+    environmental_equivalence: null
+    downstream_sensitivity_required: false
+  pose_preservation:
+    status: NOT_APPLICABLE
+  restraint_handoff:
+    status: NOT_APPLICABLE

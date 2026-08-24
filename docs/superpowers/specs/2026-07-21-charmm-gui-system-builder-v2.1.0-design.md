@@ -197,7 +197,7 @@ and current state file.
 
 The Validation Core performs read-only transfer, archive, builder, engine, and
 custom-parameter checks. Output requirements are derived from the contract and
-engine profile rather than a single hard-coded Cav3.2 example.
+engine profile rather than a single hard-coded private project example.
 
 ## 6. Core Data Model
 
@@ -820,11 +820,11 @@ stored in GitHub Actions.
    download for an existing authorized job; no new submission.
 2. **Minimal API submission**: an explicitly authorized public membrane-only
    Quick Bilayer test; one submission; `test_only_not_for_production`.
-3. **Complex local case**: Cav3.2 + ZHJ36 may be used as a private,
-   browser-assisted end-to-end acceptance case with redacted public evidence.
+3. **Complex local case**: an external private protein-ligand case may be used
+   for browser-assisted acceptance without copying identifiers into public evidence.
 
 Docking, ligand parameter quality, membrane orientation, and scientific
-interpretation remain independent Critical gates in the ZHJ36 case.
+interpretation remain independent Critical gates in every private case.
 
 ## 17. Release Gates
 

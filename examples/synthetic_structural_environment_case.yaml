@@ -1,0 +1,20 @@
+record_type: structural-environment-ledger
+schema_version: "1.0"
+components:
+  - component_id: SYN_LIP:A:1
+    classification: structure_resolved_lipid
+    classification_confidence: high
+    disposition: remove
+    parameter_available: false
+    direct_context:
+      contacts_ligand: true
+      coordinates_protein_or_ion: false
+      interpreted_hydrogen_bond: true
+      interpreted_salt_bridge: false
+      fills_modeled_pocket: true
+      part_of_claimed_microenvironment: true
+    rationale: Synthetic incomplete lipid used only to exercise the candidate gate.
+    approval_scope: Candidate_Not_For_MD
+    downstream_sensitivity_branch: retain-synthetic-structural-lipid
+production_ready: false
+no_mdrun: true

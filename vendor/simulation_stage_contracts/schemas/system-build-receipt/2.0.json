@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:simulation-stage-contracts:system-build-receipt:2.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_type", "schema_version", "receipt_id", "pipeline_id", "branch_id",
+    "revision", "status", "handoff", "contract", "package",
+    "evidence_root_sha256", "semantic_topology", "segment_matrix", "gromacs",
+    "preprocessing", "tpr_readback", "validators", "permissions", "no_mdrun",
+    "previous_receipt_sha256", "supersedes_receipt_id", "chain_root_sha256",
+    "receipt_sha256"
+  ],
+  "properties": {
+    "record_type": {"const": "system-build-receipt"},
+    "schema_version": {"const": "2.0"},
+    "receipt_id": {"type": "string", "minLength": 1},
+    "pipeline_id": {"type": "string", "minLength": 1},
+    "branch_id": {"type": "string", "minLength": 1},
+    "revision": {"type": "integer", "minimum": 1},
+    "status": {"const": "TECHNICAL_PASS_NOT_PRODUCTION_APPROVAL"},
+    "handoff": {"$ref": "#/$defs/boundRecord"},
+    "contract": {"$ref": "#/$defs/boundRecord"},
+    "package": {"$ref": "#/$defs/artifact"},
+    "evidence_root_sha256": {"$ref": "#/$defs/sha256"},
+    "semantic_topology": {"type": "object"},
+    "segment_matrix": {"type": "object"},
+    "parameter_injection": {"type": ["object", "null"]},
+    "scientific_context": {"type": ["object", "null"]},
+    "gromacs": {"type": "object"},
+    "preprocessing": {
+      "type": "object",
+      "required": ["strict_preprocessing_passed", "maxwarn_used"],
+      "properties": {
+        "strict_preprocessing_passed": {"const": true},
+        "maxwarn_used": {"const": false}
+      },
+      "additionalProperties": true
+    },
+    "tpr_readback": {
+      "type": "object",
+      "required": ["passed"],
+      "properties": {"passed": {"const": true}},
+      "additionalProperties": true
+    },
+    "validators": {"type": "object", "minProperties": 1},
+    "unresolved_assumptions": {"type": "array"},
+    "permissions": {
+      "type": "object",
+      "required": ["md_execution_allowed", "production_ready"],
+      "properties": {
+        "md_execution_allowed": {"const": false},
+        "production_ready": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "no_mdrun": {"const": true},
+    "previous_receipt_sha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "supersedes_receipt_id": {"type": ["string", "null"]},
+    "supersession_reason": {"type": ["string", "null"]},
+    "chain_root_sha256": {"$ref": "#/$defs/sha256"},
+    "receipt_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifact": {
+      "type": "object",
+      "required": ["path", "sha256", "size"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "size": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": true
+    },
+    "boundRecord": {
+      "type": "object",
+      "required": ["path", "sha256", "schema_version"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "schema_version": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": true
+    }
+  }
+}

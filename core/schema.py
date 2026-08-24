@@ -1,4 +1,4 @@
-"""Shared v2.1 schema constraints."""
+"""Stage 2 record-specific schema constraints."""
 
 from __future__ import annotations
 
@@ -6,7 +6,17 @@ from collections.abc import Mapping, Sequence
 from typing import Any
 
 
-SCHEMA_VERSION = "2.1"
+BUILD_CONTRACT_SCHEMA_VERSION = "2.2"
+RUN_REQUEST_SCHEMA_VERSION = "2.1"
+DECISION_REGISTER_SCHEMA_VERSION = "2.1"
+CAPABILITY_REGISTRY_SCHEMA_VERSION = "2.1"
+RULE_PACK_SCHEMA_VERSION = "2.1"
+APPROVAL_RECORD_SCHEMA_VERSION = "2.1"
+EXECUTION_PLAN_SCHEMA_VERSION = "2.1"
+
+# Backward-compatible alias for v2.1 record types. New code must use the
+# record-specific constants above.
+SCHEMA_VERSION = RUN_REQUEST_SCHEMA_VERSION
 
 PROHIBITED_SECRET_KEYS = {
     "apikey",
@@ -76,9 +86,9 @@ def require_fields(value: Mapping[str, Any], fields: tuple[str, ...], label: str
         raise SchemaError(f"{label} missing required fields: {', '.join(missing)}")
 
 
-def require_schema_version(value: Mapping[str, Any]) -> None:
-    if str(value.get("schema_version", "")) != SCHEMA_VERSION:
+def require_schema_version(value: Mapping[str, Any], expected: str) -> None:
+    if str(value.get("schema_version", "")) != expected:
         raise SchemaError(
-            f"schema_version must be {SCHEMA_VERSION!r}, got "
+            f"schema_version must be {expected!r}, got "
             f"{value.get('schema_version')!r}"
         )

@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:protein-ligand-simulation-suite:schema:system-build-handoff:1.0",
+  "title": "System Build Handoff",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "handoff_id",
+    "status",
+    "handoff_ready",
+    "system_build_execution_approved",
+    "md_execution_allowed",
+    "production_allowed",
+    "readiness_report",
+    "protein",
+    "ligand",
+    "complex",
+    "pose",
+    "parameters",
+    "retained_components",
+    "target_system",
+    "unresolved_assumptions",
+    "approvals",
+    "checksums"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "handoff_id": {"type": "string", "minLength": 1},
+    "status": {"const": "READY_FOR_SYSTEM_BUILD"},
+    "handoff_ready": {"const": true},
+    "system_build_execution_approved": {"const": false},
+    "md_execution_allowed": {"const": false},
+    "production_allowed": {"const": false},
+    "readiness_report": {"$ref": "#/$defs/artifact"},
+    "protein": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "approved_path",
+        "sha256",
+        "segments",
+        "missing_residue_strategy"
+      ],
+      "properties": {
+        "approved_path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "segments": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "missing_residue_strategy": {"type": "string", "minLength": 1}
+      }
+    },
+    "ligand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "residue_name",
+        "formal_charge",
+        "bound_pose",
+        "parameterization_geometry",
+        "atom_mapping"
+      ],
+      "properties": {
+        "residue_name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9]{1,4}$"
+        },
+        "formal_charge": {"type": "integer"},
+        "bound_pose": {"$ref": "#/$defs/artifact"},
+        "parameterization_geometry": {"$ref": "#/$defs/artifact"},
+        "atom_mapping": {"$ref": "#/$defs/artifact"}
+      }
+    },
+    "complex": {"$ref": "#/$defs/artifact"},
+    "pose": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_type",
+        "selection_record",
+        "heavy_atom_rmsd_angstrom",
+        "heavy_atom_tolerance_angstrom",
+        "tolerance_approval"
+      ],
+      "properties": {
+        "source_type": {
+          "enum": [
+            "experimental",
+            "analog_transfer",
+            "guided_docking",
+            "local_unbiased_docking",
+            "blind_or_ensemble_docking",
+            "generated",
+            "user_selected"
+          ]
+        },
+        "selection_record": {"$ref": "#/$defs/artifact"},
+        "heavy_atom_rmsd_angstrom": {"type": "number", "minimum": 0},
+        "heavy_atom_tolerance_angstrom": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "tolerance_approval": {"type": ["string", "null"]}
+      }
+    },
+    "parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "force_field_family",
+        "route_version",
+        "maturity",
+        "package",
+        "validation_report"
+      ],
+      "properties": {
+        "force_field_family": {"type": "string", "minLength": 1},
+        "route_version": {"type": "string", "minLength": 1},
+        "maturity": {"const": "Stable"},
+        "package": {"$ref": "#/$defs/artifact"},
+        "validation_report": {"$ref": "#/$defs/artifact"}
+      }
+    },
+    "retained_components": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metals", "cofactors", "waters"],
+      "properties": {
+        "metals": {"type": "array", "items": {"type": "string"}},
+        "cofactors": {"type": "array", "items": {"type": "string"}},
+        "waters": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "target_system": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "requirements"],
+      "properties": {
+        "type": {"enum": ["membrane", "solution", "other_reviewed"]},
+        "requirements": {"type": "object"}
+      }
+    },
+    "unresolved_assumptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "materiality", "description", "approval"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "materiality": {"const": "non_material_contextual"},
+          "description": {"type": "string", "minLength": 1},
+          "approval": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "approvals": {
+      "type": "object",
+      "required": ["pose_selection", "parameter_package", "complex_handoff"],
+      "additionalProperties": false,
+      "properties": {
+        "pose_selection": {"$ref": "#/$defs/artifact"},
+        "parameter_package": {"$ref": "#/$defs/artifact"},
+        "complex_handoff": {"$ref": "#/$defs/artifact"}
+      }
+    },
+    "checksums": {"$ref": "#/$defs/artifact"}
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

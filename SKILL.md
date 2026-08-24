@@ -5,7 +5,7 @@ license: AGPL-3.0-only
 compatibility: Agent Skills compatible. Bundled tooling requires Python 3.10+. Interactive builders need an audited browser; documented API actions need network access. Login is manual by default, with optional OS-vault credentials and signed authorization. MFA, CAPTCHA, terms changes, and native-dialog fallback remain operator actions.
 metadata:
   author: Liao Chenyan
-  version: "2.1.0"
+  version: "2.2.0"
   canonical_repository: https://github.com/ChenyanLiao/CHARMM-GUI-System-Builder
   origin_id: io.github.ChenyanLiao.charmm-gui-system-builder
 ---
@@ -28,13 +28,14 @@ and must not be represented as canonical releases.
 
 ## Version
 
-Use release 2.1.0 Guided Contract Edition. Before any builder action, expand the
+Use release 2.2.0 Audit Closure and Stage Handoff Edition. Before any builder action, expand the
 requested system into a complete parameter inventory, explain the available
 choices, classify risk, obtain the required confirmations, and lock a hashed
 build contract. Route that same contract through only a documented official API
 or an audited browser. Keep page completion, backend completion, transfer,
-archive, package, custom-parameter, preprocessing, and scientific approval as
-separate gates. Runtime adapters must not fork or weaken this core workflow.
+archive, package, custom-parameter, preprocessing, receipt, MD authorization,
+and scientific approval as separate gates. Runtime adapters must not fork or
+weaken this core workflow.
 
 ## Select A Runtime Adapter
 
@@ -110,6 +111,7 @@ Report the narrowest status supported by evidence:
 | `Builder_Backend_Complete_Package_Unverified` | Final backend output terminated normally, but no real final archive has passed inspection. |
 | `Candidate_Package_Validated` | A real archive lists successfully and contains the required GROMACS payload and components. |
 | `Technical_Pass_Not_Production_Approval` | Package, custom-parameter injection, and strict `grompp` gates pass; scientific approvals may remain open. |
+| `Receipt_2_Current` | A hash-bound Stage 2 Receipt 2.0 is current in its branch chain; it still denies MD and production. |
 | `Technical_Fail` | A contract-derived technical gate failed and the failed evidence is preserved. |
 | `Incomplete_Or_Unknown` | Evidence is insufficient to classify the run safely. |
 
@@ -130,6 +132,18 @@ Use independent evidence layers:
 Use backend files over a stale running banner. Use archive contents over a
 filename or page link. Use strict preprocessing over a superficial file count.
 Do not infer a higher layer from a lower one.
+
+## Close Stage 2 Explicitly
+
+After package, semantic-topology, segment, custom-parameter, strict `grompp`,
+and TPR-readback evidence exist, run `audit_system_build_closure.py`. Audit is
+read-only and produces only a closure draft. A separately authorized
+`lock_system_build_receipt.py` operation may then create an immutable Receipt
+2.0 and append its hash-chained branch event. Verify it with
+`verify_system_build_receipt.py`. A legacy Receipt 1.0 is readable but requires
+current read-only revalidation before Stage 3. A latest pointer is discovery
+metadata, not evidence. Every Stage 2 receipt fixes `md_execution_allowed=false`,
+`production_ready=false`, and `no_mdrun=true`.
 
 ## Run The Guided Decision Protocol
 
@@ -179,6 +193,17 @@ Audit the input PDB before upload:
 4. Preserve ligand coordinates, atom order, stereochemistry, formal charge,
    residue name, and chemical identity.
 5. Never overwrite the original PDB.
+
+Before deleting any non-protein component, use
+[`structural_environment_parity_checklist.md`](checklists/structural_environment_parity_checklist.md).
+Classify it as bulk membrane, structure-resolved lipid, structural ion or
+cofactor, unrelated/obsolete, or unknown. Record direct ligand/protein contact,
+coordination, hydrogen-bond, salt-bridge, and pocket-filling context in
+`STRUCTURAL_ENVIRONMENT_LEDGER.yaml`. A lipid-like residue in direct contact
+with the ligand is Critical and cannot be silently normalized as bulk lipid.
+An approved candidate omission must set environmental equivalence false and
+name a downstream sensitivity branch; an unresolved disposition blocks
+closure.
 
 For proteins with large unresolved sequence gaps, prepare explicit segments.
 Do not let CHARMM-GUI bond across a large gap as one continuous protein
@@ -233,6 +258,13 @@ Treat PPM/OPM orientation as a review gate. Require `step2_orient.pdb`, nonzero
 plausible top/bottom areas, a sensible protein Z span, and preserved ligand
 pose/internal geometry. Stop on empty PPM output, zero top/bottom area, or an
 unreviewed fallback to `Use PDB orientation`.
+
+For a protein-ligand build, preserve a pose lineage from raw complex through
+cleaned PDB, PDB Reader, orientation, assembly, and final GROMACS coordinates.
+Record atom mapping coverage, ligand internal RMSD, protein- or pocket-aligned
+pose RMSD, and COM shift using contract-defined thresholds. Separate rigid
+orientation/recentering from ligand-relative displacement. This proves
+conversion fidelity only, not binding-site validity.
 
 ## Route Only Through Confirmed Capabilities
 
@@ -390,11 +422,19 @@ Run, in order:
 3. `verify_custom_ligand_injection.py` when custom parameters are expected;
 4. component and charge/lipid/ion summaries;
 5. strict `gmx grompp` on copied/preflight inputs, never `gmx mdrun`.
+6. `validate_stage2_scientific_context.py` when structural-environment, pose,
+   or restraint evidence is required by the locked contract.
 
 Check archive readability, member path safety, `.gro/.top/.itp/.mdp`,
 `topol.top`, protein, ligand, lipids, TIP3/water, intended ions, ligand total charge, lipid ratio,
 semi-isotropic pressure-coupling settings, and CHARMM warnings. Preserve
 original MDP files before any edits.
+
+Record restraint files, selection macros, equilibration schedule, ligand-heavy-
+atom restraint state, and expected production `define` value. Undefined macros
+or contradictory states block closure. Stage 2 records a downstream
+restraint-release validation requirement but never executes that validation or
+any MD.
 
 For custom GROMACS ligand parameters, do not require byte-for-byte equality
 between the frozen validation ITP and the final package ITP. Verify atom names,

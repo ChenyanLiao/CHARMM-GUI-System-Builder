@@ -1,6 +1,6 @@
 # CHARMM-GUI System Builder Scripts
 
-Most scripts are read-only with respect to CHARMM-GUI. v2.1.0 also includes a
+Most scripts are read-only with respect to CHARMM-GUI. v2.2.0 also includes a
 gated official API client and an opt-in OS-vault Credential Broker. Those paths
 perform no live action unless the caller supplies `--allow-live`, a documented
 capability, a locked test-only contract where required, and a valid scoped
@@ -35,6 +35,16 @@ authorization. No script runs MD or `gmx mdrun`.
   metadata/version consistency, required cross-agent adapters and docs, local
   links, and the 500-line progressive-disclosure limit without modifying the
   skill.
+- `audit_system_build_closure.py`: read-only assembly and audit of a Stage 2
+  closure candidate from locked contract-derived evidence.
+- `lock_system_build_receipt.py`: explicit atomic Receipt 2.0 lock plus
+  hash-chained branch registry update; never grants MD permission.
+- `verify_system_build_receipt.py`: verify receipt content, branch chain,
+  supersession status, and optional evidence root.
+- `validate_stage2_scientific_context.py`: validate the locked contract's
+  structural-environment ledger, pose-preservation transitions, and restraint
+  handoff without running MD. Candidate-only structural omissions remain
+  environment-altered and require a downstream sensitivity branch.
 
 ## Rules
 
@@ -83,6 +93,13 @@ python3 scripts/verify_custom_ligand_injection.py \
 
 python3 scripts/validate_skill_package.py /path/to/skill \
   --json-out /path/to/skill_validation.json
+
+python3 scripts/validate_stage2_scientific_context.py \
+  --contract /path/to/APPROVED_BUILD_CONTRACT.json \
+  --structural-ledger /path/to/STRUCTURAL_ENVIRONMENT_LEDGER.yaml \
+  --pose-report /path/to/POSE_PRESERVATION_REPORT.yaml \
+  --restraint-report /path/to/RESTRAINT_HANDOFF.yaml \
+  --out /path/to/STAGE2_SCIENTIFIC_CONTEXT.json
 ```
 
 Do not infer compression from the suffix. Safari can save a normal POSIX tar

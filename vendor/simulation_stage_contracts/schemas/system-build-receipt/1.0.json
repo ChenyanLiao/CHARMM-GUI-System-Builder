@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:protein-ligand-simulation-suite:schema:system-build-receipt:1.0",
+  "title": "System Build Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "receipt_id",
+    "status",
+    "handoff",
+    "builder",
+    "package",
+    "parameter_injection",
+    "components",
+    "component_roles",
+    "validation_reports",
+    "preprocessing",
+    "permissions",
+    "no_mdrun"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "receipt_id": {"type": "string", "minLength": 1},
+    "status": {"const": "TECHNICAL_PASS_NOT_PRODUCTION_APPROVAL"},
+    "handoff": {"$ref": "#/$defs/artifact"},
+    "builder": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "run_id"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "run_id": {"type": "string", "minLength": 1}
+      }
+    },
+    "package": {"$ref": "#/$defs/artifact"},
+    "parameter_injection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verified", "parameter_package_sha256", "evidence"],
+      "properties": {
+        "verified": {"const": true},
+        "parameter_package_sha256": {"$ref": "#/$defs/sha256"},
+        "evidence": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/evidenceArtifact"},
+          "minItems": 1,
+          "contains": {
+            "type": "object",
+            "properties": {
+              "evidence_type": {"const": "parameter_injection_report"}
+            },
+            "required": ["evidence_type"]
+          }
+        }
+      }
+    },
+    "components": {
+      "type": "object",
+      "minProperties": 2,
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    },
+    "component_roles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protein", "ligand"],
+      "properties": {
+        "protein": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "ligand": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "solvent": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "ions": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "lipids": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "cofactors": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        }
+      }
+    },
+    "validation_reports": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/evidenceArtifact"},
+      "minItems": 1,
+      "contains": {
+        "type": "object",
+        "properties": {
+          "evidence_type": {"const": "package_validation_report"}
+        },
+        "required": ["evidence_type"]
+      },
+      "allOf": [
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "evidence_type": {"const": "preprocessing_report"}
+            },
+            "required": ["evidence_type"]
+          }
+        }
+      ]
+    },
+    "preprocessing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["strict_preprocessing_passed", "maxwarn_used"],
+      "properties": {
+        "strict_preprocessing_passed": {"const": true},
+        "maxwarn_used": {"const": false}
+      }
+    },
+    "permissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["md_execution_allowed", "production_allowed"],
+      "properties": {
+        "md_execution_allowed": {"const": false},
+        "production_allowed": {"const": false}
+      }
+    },
+    "no_mdrun": {"const": true}
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "evidenceArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "evidence_type",
+        "validator_status"
+      ],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "evidence_type": {
+          "enum": [
+            "parameter_injection_report",
+            "package_validation_report",
+            "preprocessing_report",
+            "other_reviewed_report"
+          ]
+        },
+        "validator_status": {"const": "PASS"}
+      }
+    }
+  }
+}

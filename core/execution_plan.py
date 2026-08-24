@@ -7,7 +7,7 @@ from typing import Any
 
 from .capabilities import CapabilityRegistry
 from .io import load_structured
-from .schema import SCHEMA_VERSION, SchemaError
+from .schema import EXECUTION_PLAN_SCHEMA_VERSION, SchemaError
 
 
 BUILDER_CAPABILITIES = {
@@ -29,7 +29,7 @@ MODULE_MATURITY_KEYS = {
 
 def _maturity_map(root: Path) -> dict[str, str]:
     registry = load_structured(root / "community/MODULE_MATURITY_REGISTRY.json")
-    if str(registry.get("schema_version")) != SCHEMA_VERSION:
+    if str(registry.get("schema_version")) != EXECUTION_PLAN_SCHEMA_VERSION:
         raise SchemaError("module maturity registry schema_version must be 2.1")
     return {
         str(row["module"]): str(row["maturity"])

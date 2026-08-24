@@ -189,3 +189,19 @@
 - Recovery action: keep one core `SKILL.md`; place only tool/path mappings in
   `adapters/`. Validate all adapters and version metadata in CI before release.
 - Reusable: yes.
+
+## 2026-08-24 - structure-resolved pocket lipid removed as bulk membrane
+
+- Step: input cleaning and membrane replacement.
+- Error excerpt: a lipid-like HETATM directly contacting the ligand was removed
+  because its original parameters were incomplete, then replaced only by the
+  generic bulk membrane composition.
+- Root cause: component role was inferred from residue class instead of contact
+  context; no structural-environment ledger bound the omission to scientific
+  scope.
+- Recovery action: classify every non-protein component before cleaning. A
+  direct-contact removal is Critical. Candidate-only work must set
+  `environmental_equivalence=false`, name a retained-component sensitivity
+  branch, and remain not production-ready. Do not infer causality from later
+  ligand reorientation without that comparison.
+- Reusable: yes.

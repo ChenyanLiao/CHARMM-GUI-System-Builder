@@ -4,7 +4,7 @@ Install the tagged Git release into the active workspace:
 
 ```bash
 openclaw skills install \
-  git:ChenyanLiao/CHARMM-GUI-System-Builder@v2.1.0 \
+  git:ChenyanLiao/CHARMM-GUI-System-Builder@v2.2.0 \
   --as charmm-gui-system-builder
 ```
 

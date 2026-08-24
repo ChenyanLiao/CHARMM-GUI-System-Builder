@@ -342,6 +342,19 @@ class ContinuationGuardTests(unittest.TestCase):
         self.assertFalse(report["safe_to_yield"])
         self.assertNotEqual(report["decision"], "WORKFLOW_COMPLETE")
 
+    def test_v21_empty_closure_gates_do_not_bypass_completion(self) -> None:
+        state = base_state()
+        state.update(
+            schema_version="2.1",
+            workflow_complete=True,
+            runtime_state="technical_pass",
+            closure_gates={},
+            next_allowed_action="",
+        )
+        report = evaluate(state)
+        self.assertFalse(report["safe_to_yield"])
+        self.assertNotEqual(report["decision"], "WORKFLOW_COMPLETE")
+
     def test_v21_completion_requires_strict_grompp(self) -> None:
         state = base_state()
         state.update(

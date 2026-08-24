@@ -11,7 +11,7 @@ from typing import Any
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from .schema import (
-    SCHEMA_VERSION,
+    DECISION_REGISTER_SCHEMA_VERSION,
     assert_no_secret_fields,
     is_secret_key,
     normalized_key,
@@ -84,7 +84,7 @@ def redact(value: Any) -> Any:
 
 def make_event(**fields: Any) -> dict[str, Any]:
     event = {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": DECISION_REGISTER_SCHEMA_VERSION,
         "timestamp": datetime.now(timezone.utc).isoformat(),
         **redact(fields),
     }
@@ -120,6 +120,9 @@ def make_page_event(
 
 def append_event(path: Path, event: dict[str, Any]) -> None:
     assert_no_secret_fields(event)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(event, ensure_ascii=False, sort_keys=True) + "\n")
+    from .shared import activate_vendor
+
+    activate_vendor()
+    from simulation_stage_contracts.evidence import append_event as append_shared_event
+
+    append_shared_event(path, event)

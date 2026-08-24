@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:simulation-stage-contracts:approved-build-contract:2.2",
+  "type": "object",
+  "required": ["record_type", "schema_version", "pipeline_id", "branch_id", "revision"],
+  "properties": {
+    "record_type": {"const": "approved-build-contract"},
+    "schema_version": {"const": "2.2"},
+    "pipeline_id": {"type": "string", "minLength": 1},
+    "branch_id": {"type": "string", "minLength": 1},
+    "revision": {"type": "integer", "minimum": 1}
+  },
+  "additionalProperties": true
+}

@@ -1,7 +1,10 @@
 {
-  "schema_version": "2.1",
+  "record_type": "approved-build-contract",
+  "schema_version": "2.2",
   "contract_state": "draft",
   "revision": 1,
+  "pipeline_id": "",
+  "branch_id": "main",
   "run_id": "",
   "target_id": "",
   "builder": "",
@@ -24,6 +27,19 @@
       "residue_name": "LIG",
       "formal_charge": null
     }
+  },
+  "structural_environment": {
+    "required": false,
+    "ledger_path": "",
+    "ledger_sha256": ""
+  },
+  "pose_preservation": {
+    "required": false,
+    "reference_stage": "raw_complex"
+  },
+  "restraint_handoff": {
+    "required": false,
+    "expected_production_define": ""
   },
   "credential_provider_ref": "",
   "production_ready": false,

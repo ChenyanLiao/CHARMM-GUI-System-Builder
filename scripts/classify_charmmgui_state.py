@@ -137,7 +137,9 @@ def backend_is_complete(value: str) -> bool:
 def closure_gates_pass(state: dict) -> bool:
     gates = state.get("closure_gates") or {}
     if not gates:
-        return bool(state.get("workflow_complete"))
+        return False if str(state.get("schema_version", "")) == "2.1" else bool(
+            state.get("workflow_complete")
+        )
     if str(state.get("schema_version", "")) == "2.1":
         base = bool(
             gates.get("builder_backend_complete")

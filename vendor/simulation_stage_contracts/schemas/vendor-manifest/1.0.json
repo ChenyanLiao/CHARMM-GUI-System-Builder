@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:simulation-stage-contracts:vendor-manifest:1.0",
+  "type": "object",
+  "required": ["record_type", "schema_version", "package_version", "source_tag", "source_commit", "tree_sha256", "files"],
+  "properties": {
+    "record_type": {"const": "vendor-manifest"},
+    "schema_version": {"const": "1.0"},
+    "package_version": {"type": "string", "minLength": 1},
+    "source_tag": {"type": "string", "minLength": 1},
+    "source_commit": {"type": "string", "minLength": 1},
+    "tree_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "files": {"type": "array", "minItems": 1}
+  },
+  "additionalProperties": true
+}
