@@ -13,7 +13,7 @@ from typing import Any
 
 
 CANONICAL_NAME = "charmm-gui-system-builder"
-EXPECTED_VERSION = "2.1.0"
+EXPECTED_VERSION = "2.2.0"
 ALLOWED_FIELDS = {
     "name",
     "description",
@@ -57,9 +57,14 @@ REQUIRED_PATHS = (
     "rules/quick_bilayer/v2.1.json",
     "rules/output_engines/gromacs-v2.1.json",
     "templates/RUN_STATE_TEMPLATE.json",
+    "templates/STRUCTURAL_ENVIRONMENT_LEDGER_TEMPLATE.yaml",
+    "templates/POSE_PRESERVATION_REPORT_TEMPLATE.yaml",
+    "templates/RESTRAINT_HANDOFF_TEMPLATE.yaml",
+    "checklists/structural_environment_parity_checklist.md",
     "templates/RUNTIME_CAPABILITY_MANIFEST_TEMPLATE.json",
     "templates/legacy/RUN_STATE_V6_TEMPLATE.json",
     "core/contracts.py",
+    "core/scientific_context.py",
     "core/decisions.py",
     "core/router.py",
     "core/credentials.py",

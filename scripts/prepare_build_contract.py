@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-FileCopyrightText: 2026 Liao Chenyan
 # SPDX-License-Identifier: AGPL-3.0-only
-"""Prepare a v2.1 parameter review and build-contract draft without submitting."""
+"""Prepare a parameter review and v2.2 build-contract draft without submitting."""
 
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ from core.contracts import lock_contract  # noqa: E402
 from core.execution_plan import derive_execution_plan  # noqa: E402
 from core.inventory import build_inventory  # noqa: E402
 from core.io import load_structured, write_json  # noqa: E402
-from core.schema import SCHEMA_VERSION, SchemaError, assert_no_secret_fields  # noqa: E402
+from core.schema import BUILD_CONTRACT_SCHEMA_VERSION, SchemaError, assert_no_secret_fields  # noqa: E402
 
 
 def build_contract_draft(
@@ -50,10 +50,18 @@ def build_contract_draft(
         if decision["parameter_id"].endswith("_approval")
         and decision.get("contract_value") is False
     )
+    system = run_request.get("system", {})
+    has_ligand = bool(system.get("has_ligand")) if isinstance(system, dict) else False
+    membrane_protein = run_request.get("builder") == "membrane_builder" and not bool(
+        system.get("membrane_only") if isinstance(system, dict) else False
+    )
     draft = {
-        "schema_version": SCHEMA_VERSION,
+        "record_type": "approved-build-contract",
+        "schema_version": BUILD_CONTRACT_SCHEMA_VERSION,
         "contract_state": "draft",
         "revision": 1,
+        "pipeline_id": run_request.get("pipeline_id", run_request.get("run_id", "")),
+        "branch_id": run_request.get("branch_id", "main"),
         "run_id": run_request.get("run_id", ""),
         "target_id": run_request.get("target_id", ""),
         "builder": run_request.get("builder", ""),
@@ -69,6 +77,18 @@ def build_contract_draft(
         "route_maturity": execution_plan.get("route_maturity", ""),
         "module_maturity": execution_plan.get("module_maturity", {}),
         "expected_output": run_request.get("expected_output", {}),
+        "structural_environment": run_request.get(
+            "structural_environment",
+            {"required": membrane_protein},
+        ),
+        "pose_preservation": run_request.get(
+            "pose_preservation",
+            {"required": has_ligand},
+        ),
+        "restraint_handoff": run_request.get(
+            "restraint_handoff",
+            {"required": membrane_protein},
+        ),
         "credential_provider_ref": run_request.get("credential_provider_ref", ""),
         "production_ready": False,
         "no_mdrun": True,
@@ -79,7 +99,7 @@ def build_contract_draft(
 
 def write_markdown(inventory: dict, draft: dict, path: Path) -> None:
     lines = [
-        "# CHARMM-GUI v2.1 Build Contract Review",
+        "# CHARMM-GUI v2.2 Build Contract Review",
         "",
         f"- Run ID: `{draft['run_id']}`",
         f"- Target: `{draft['target_id']}`",

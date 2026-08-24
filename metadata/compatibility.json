@@ -2,7 +2,7 @@
   "schema_version": "2.1",
   "skill": {
     "name": "charmm-gui-system-builder",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "standard": "https://agentskills.io/specification",
     "canonical_repository": "https://github.com/ChenyanLiao/CHARMM-GUI-System-Builder"
   },

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:simulation-stage-contracts:md-scope-authorization:1.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_type", "schema_version", "authorization_id", "pipeline_id",
+    "branch_id", "scope", "execution_approved", "receipt_sha256",
+    "receipt_schema_version", "package_sha256", "evidence_root_sha256",
+    "protocol", "resource_limits", "issued_at", "expires_at",
+    "production_allowed"
+  ],
+  "properties": {
+    "record_type": {"const": "md-scope-authorization"},
+    "schema_version": {"const": "1.1"},
+    "authorization_id": {"type": "string", "minLength": 1},
+    "pipeline_id": {"type": "string", "minLength": 1},
+    "branch_id": {"type": "string", "minLength": 1},
+    "scope": {"enum": ["preprocess", "minimize", "equilibrate", "short_validation_md", "production_md"]},
+    "execution_approved": {"const": true},
+    "receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "receipt_schema_version": {"const": "2.0"},
+    "package_sha256": {"$ref": "#/$defs/sha256"},
+    "evidence_root_sha256": {"$ref": "#/$defs/sha256"},
+    "protocol": {"type": "object"},
+    "resource_limits": {"type": "object"},
+    "issued_at": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "production_allowed": {"type": "boolean"}
+  },
+  "$defs": {"sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

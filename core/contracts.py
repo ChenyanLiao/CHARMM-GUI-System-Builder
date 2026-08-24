@@ -9,7 +9,7 @@ from typing import Any
 
 from .canonical import sha256_value
 from .schema import (
-    SCHEMA_VERSION,
+    BUILD_CONTRACT_SCHEMA_VERSION,
     SchemaError,
     assert_no_secret_fields,
     require_fields,
@@ -33,6 +33,11 @@ VALID_APPROVAL_STATUSES = {
     "pending",
     "temporary_assumption",
 }
+SCIENTIFIC_CONTEXT_SECTIONS = (
+    "structural_environment",
+    "pose_preservation",
+    "restraint_handoff",
+)
 
 
 def _hash_payload(contract: Mapping[str, Any]) -> dict[str, Any]:
@@ -43,7 +48,7 @@ def _hash_payload(contract: Mapping[str, Any]) -> dict[str, Any]:
 
 def validate_contract(contract: Mapping[str, Any], *, require_locked: bool = False) -> None:
     require_mapping(contract, "build contract")
-    require_schema_version(contract)
+    require_schema_version(contract, BUILD_CONTRACT_SCHEMA_VERSION)
     require_fields(
         contract,
         (
@@ -106,6 +111,12 @@ def validate_contract(contract: Mapping[str, Any], *, require_locked: bool = Fal
         raise SchemaError("production_ready must remain false")
     if contract.get("no_mdrun") is not True:
         raise SchemaError("no_mdrun must remain true")
+    for section_name in SCIENTIFIC_CONTEXT_SECTIONS:
+        section = contract.get(section_name)
+        if not isinstance(section, Mapping):
+            raise SchemaError(f"build contract {section_name} must be a mapping")
+        if not isinstance(section.get("required"), bool):
+            raise SchemaError(f"build contract {section_name}.required must be boolean")
     if require_locked:
         if contract.get("contract_state") != "locked":
             raise SchemaError("build contract must be locked")
@@ -115,9 +126,14 @@ def validate_contract(contract: Mapping[str, Any], *, require_locked: bool = Fal
 
 def lock_contract(draft: Mapping[str, Any]) -> dict[str, Any]:
     contract = copy.deepcopy(dict(draft))
-    contract["schema_version"] = SCHEMA_VERSION
+    contract["record_type"] = "approved-build-contract"
+    contract["schema_version"] = BUILD_CONTRACT_SCHEMA_VERSION
+    contract.setdefault("pipeline_id", str(contract.get("run_id", "")))
+    contract.setdefault("branch_id", "main")
     contract["contract_state"] = "locked"
     contract.setdefault("revision", 1)
+    for section_name in SCIENTIFIC_CONTEXT_SECTIONS:
+        contract.setdefault(section_name, {"required": False})
     contract["production_ready"] = False
     contract["no_mdrun"] = True
     contract.pop(HASH_FIELD, None)

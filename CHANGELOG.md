@@ -1,5 +1,28 @@
 # Changelog
 
+## 2.2.0 - 2026-08-24
+
+- Vendors `simulation-stage-contracts` v1.0.0 with deterministic integrity
+  verification and independent per-record schema versions.
+- Declares PyYAML and `jsonschema` as runtime dependencies for versioned YAML
+  contracts, receipts, and record validation, and installs them explicitly in
+  the CI matrix.
+- Adds approved build contract 2.2 while preserving 2.1 as read-only legacy
+  input and preventing dual contract authorities.
+- Adds semantic topology, segment reconciliation, strict `grompp`, TPR
+  readback, evidence freshness, and contract-derived closure primitives.
+- Moves Receipt 2.0 issuance into Stage 2 with separate read-only audit,
+  explicit atomic lock, verification, and hash-chained supersession.
+- Keeps every receipt and validation output at `production_ready=false`,
+  `md_execution_allowed=false`, and `no_mdrun=true`.
+- Adds a structural-environment parity ledger so structure-resolved pocket
+  lipids, ions, and cofactors cannot be silently removed as bulk HETATM.
+- Adds contract-derived pose-preservation and restraint-handoff gates; Stage 2
+  records downstream sensitivity/release requirements but never runs MD.
+- Replaces the historical target-specific public case summary with synthetic,
+  redacted fixtures that exercise the same gates without publishing private
+  molecular-system details or licensed CHARMM-GUI artifacts.
+
 ## 2.1.0 - 2026-07-22
 
 - Adds a Guided Decision Protocol that expands each requested system into a

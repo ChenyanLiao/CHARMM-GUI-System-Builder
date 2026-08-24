@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:simulation-stage-contracts:approved-build-contract:2.1",
+  "type": "object",
+  "required": ["schema_version"],
+  "properties": {"schema_version": {"const": "2.1"}},
+  "additionalProperties": true
+}

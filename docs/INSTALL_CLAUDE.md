@@ -3,7 +3,7 @@
 ## Personal Installation
 
 ```bash
-git clone --branch v2.1.0 --depth 1 \
+git clone --branch v2.2.0 --depth 1 \
   https://github.com/ChenyanLiao/CHARMM-GUI-System-Builder.git \
   ~/.claude/skills/charmm-gui-system-builder
 ```
@@ -16,6 +16,8 @@ exist when the session began.
 Verify the installed copy:
 
 ```bash
+python3 -m pip install -r \
+  ~/.claude/skills/charmm-gui-system-builder/requirements.txt
 python3 ~/.claude/skills/charmm-gui-system-builder/scripts/validate_skill_package.py \
   ~/.claude/skills/charmm-gui-system-builder --strict-directory-name
 ```

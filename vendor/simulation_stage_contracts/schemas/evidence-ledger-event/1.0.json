@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:simulation-stage-contracts:evidence-ledger-event:1.0",
+  "type": "object",
+  "required": ["record_type", "schema_version", "event_id", "timestamp", "action"],
+  "properties": {
+    "record_type": {"const": "evidence-ledger-event"},
+    "schema_version": {"const": "1.0"},
+    "event_id": {"type": "string", "minLength": 1},
+    "timestamp": {"type": "string", "minLength": 1},
+    "action": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": true
+}

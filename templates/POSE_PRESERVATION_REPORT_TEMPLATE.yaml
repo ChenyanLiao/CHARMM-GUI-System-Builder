@@ -1,0 +1,6 @@
+record_type: pose-preservation-report
+schema_version: "1.0"
+transitions: []
+proves_conversion_fidelity_only: true
+production_ready: false
+no_mdrun: true

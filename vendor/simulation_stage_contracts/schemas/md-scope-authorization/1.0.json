@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:protein-ligand-simulation-suite:schema:md-scope-authorization:1.0",
+  "title": "MD Scope Authorization",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "authorization_id",
+    "scope",
+    "execution_approved",
+    "receipt",
+    "system_package_sha256",
+    "engine",
+    "protocol",
+    "resource_limits",
+    "run_limits",
+    "approval_record",
+    "expires_at",
+    "production_allowed"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "authorization_id": {"type": "string", "minLength": 1},
+    "scope": {
+      "enum": [
+        "preprocess",
+        "minimize",
+        "equilibrate",
+        "short_validation_md",
+        "production_md"
+      ]
+    },
+    "execution_approved": {"const": true},
+    "receipt": {"$ref": "#/$defs/artifact"},
+    "system_package_sha256": {"$ref": "#/$defs/sha256"},
+    "engine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1}
+      }
+    },
+    "protocol": {"$ref": "#/$defs/artifact"},
+    "resource_limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_walltime_hours", "max_cpus", "max_gpus"],
+      "properties": {
+        "max_walltime_hours": {"type": "number", "exclusiveMinimum": 0},
+        "max_cpus": {"type": "integer", "minimum": 1},
+        "max_gpus": {"type": "integer", "minimum": 0}
+      }
+    },
+    "run_limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_submissions", "max_steps", "max_duration_ps"],
+      "properties": {
+        "max_submissions": {"type": "integer", "minimum": 1},
+        "max_steps": {"type": "integer", "minimum": 0},
+        "max_duration_ps": {"type": "number", "minimum": 0}
+      }
+    },
+    "approval_record": {"$ref": "#/$defs/artifact"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "production_allowed": {"type": "boolean"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"scope": {"const": "production_md"}},
+        "required": ["scope"]
+      },
+      "then": {
+        "properties": {"production_allowed": {"const": true}}
+      },
+      "else": {
+        "properties": {"production_allowed": {"const": false}}
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

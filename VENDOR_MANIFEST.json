@@ -1,0 +1,310 @@
+{
+  "files": [
+    {
+      "path": "AUTHORS.md",
+      "sha256": "ba98b8d7519ea8d8f40232b2ac81eaf7a43c5ac3c791b3b27ab425f552de0aac",
+      "size": 64
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
+      "size": 34523
+    },
+    {
+      "path": "NOTICE",
+      "sha256": "cddaaeea080f458323304d19ae55d8273fae676192bd393d5189ceae65f97b0e",
+      "size": 343
+    },
+    {
+      "path": "schemas/approved-build-contract/2.1.json",
+      "sha256": "12fd95dae23bfd78860bb70659fbb45eb2cf1c714badc72d0b1e4370c3616995",
+      "size": 275
+    },
+    {
+      "path": "schemas/approved-build-contract/2.2.json",
+      "sha256": "ab9938c3cc17900f7635fae0fc00d14c752693f982a834bdcd49a1f7a6567058",
+      "size": 554
+    },
+    {
+      "path": "schemas/evidence-index/1.0.json",
+      "sha256": "5a897cb31e46dc2b868e40e6ff5358c419882e1328bb66e55e725e0e210ef33d",
+      "size": 462
+    },
+    {
+      "path": "schemas/evidence-ledger-event/1.0.json",
+      "sha256": "cd0650491d1377b34670b77efdc9f4c6b4aa2c168f47e6eb48c5e81d569e90a5",
+      "size": 541
+    },
+    {
+      "path": "schemas/md-scope-authorization/1.0.json",
+      "sha256": "7db65db6b7f241b31e5c34a19302966aba34de9bf773e154d5ecf6a8e29d3607",
+      "size": 2827
+    },
+    {
+      "path": "schemas/md-scope-authorization/1.1.json",
+      "sha256": "30fbb7ee8f3f84bddb3089bf6325cc2fe1f2a84e5492ee011fe462326f4c6f03",
+      "size": 1463
+    },
+    {
+      "path": "schemas/receipt-chain-event/1.0.json",
+      "sha256": "770353abbb5a0207fc8aed0676d5eb2e22a159115c23a3b7366cebc66d3888a6",
+      "size": 922
+    },
+    {
+      "path": "schemas/system-build-handoff/1.0.json",
+      "sha256": "4b0f4b5356c836fcf7995752a7d0309476944561690eb827b04d12d457e5a41b",
+      "size": 5611
+    },
+    {
+      "path": "schemas/system-build-handoff/1.1.json",
+      "sha256": "b5f4af55f59ef54f72901ef5b0c29c0e45bd1cd7f3addce7aa2dbc3f96a280fe",
+      "size": 9865
+    },
+    {
+      "path": "schemas/system-build-receipt/1.0.json",
+      "sha256": "8dedfaeefb6c86bdabe46b013ae8cb0761456ffae6a3afe88f8dd5b62020b67b",
+      "size": 5120
+    },
+    {
+      "path": "schemas/system-build-receipt/2.0.json",
+      "sha256": "2498a3999b1d583f709777a429411f1fcf6f5e94efff7e78fe4cab24d82ee8ae",
+      "size": 3328
+    },
+    {
+      "path": "schemas/vendor-manifest/1.0.json",
+      "sha256": "94f9e50037a0968ccd50d542349625c0c0dfd33ea4612e83e5b0fa4d4a84d62d",
+      "size": 698
+    },
+    {
+      "path": "simulation_stage_contracts/__init__.py",
+      "sha256": "8f77784581cf7c701fdd72498d28b435a245d45026474d06477659096e451cd3",
+      "size": 130
+    },
+    {
+      "path": "simulation_stage_contracts/artifacts/__init__.py",
+      "sha256": "8fbb042e6de8515455e195c881d833ff4f65bed6c7e90f3a4b28513816520fdb",
+      "size": 195
+    },
+    {
+      "path": "simulation_stage_contracts/artifacts/identity.py",
+      "sha256": "309797e6cf0e5cf9b110b1b320e0019de7690ada25d9f2afb311e50104bfb1f3",
+      "size": 866
+    },
+    {
+      "path": "simulation_stage_contracts/artifacts/paths.py",
+      "sha256": "f0c93be950331b40a79989f272bdbb5a78c375c5937f460fd5f2bf7984cc3b75",
+      "size": 1029
+    },
+    {
+      "path": "simulation_stage_contracts/canonicalization/__init__.py",
+      "sha256": "47f1ace63a0a0e8b8eaef62697cb61e985d1733fa0fb898c73eafa7c4effe556",
+      "size": 151
+    },
+    {
+      "path": "simulation_stage_contracts/canonicalization/hashing.py",
+      "sha256": "09ac4ac927781d1ff820463c1935c885e9a1355a0d6bce29f27ae9a5be530950",
+      "size": 545
+    },
+    {
+      "path": "simulation_stage_contracts/canonicalization/json.py",
+      "sha256": "644b84ae3589b4e594522144a1f6db1852d1424fe6604e3470494c4b35eb4070",
+      "size": 488
+    },
+    {
+      "path": "simulation_stage_contracts/cli.py",
+      "sha256": "dc72169cd063e9187a520d351440eed7900e1485d9775ba334cd3469a487a2f8",
+      "size": 754
+    },
+    {
+      "path": "simulation_stage_contracts/engines/__init__.py",
+      "sha256": "ba849c7137086c46d5ab1e684d411dd504ac062de2c520237a6f9bbc1757793c",
+      "size": 62
+    },
+    {
+      "path": "simulation_stage_contracts/engines/charmm_gui/__init__.py",
+      "sha256": "575f658c5d8a41df77db045f3945e45bfe4be786c9a17f6eb7f6d6867892abe0",
+      "size": 162
+    },
+    {
+      "path": "simulation_stage_contracts/engines/charmm_gui/archive.py",
+      "sha256": "cb5bc76d7e37947e6cce1544f2ebe0a3d70432b7ce499aa091992479cd781b7d",
+      "size": 5442
+    },
+    {
+      "path": "simulation_stage_contracts/engines/charmm_gui/package.py",
+      "sha256": "98fae988a2042436fe094217acbd9a3c2d35afd64f29d957fb3fcf4f711ec4a7",
+      "size": 1515
+    },
+    {
+      "path": "simulation_stage_contracts/engines/gromacs/__init__.py",
+      "sha256": "5e2530a26ea9296ecede9b182fe069fbb9e81c708d67745497ecbafe088a8346",
+      "size": 166
+    },
+    {
+      "path": "simulation_stage_contracts/engines/gromacs/capabilities.py",
+      "sha256": "80be27f7f273611972765ce3d0c563099f1a41a7bb6faf4fba215555d27060d2",
+      "size": 1500
+    },
+    {
+      "path": "simulation_stage_contracts/engines/gromacs/grompp.py",
+      "sha256": "56ffe033a923b9125b5d7932802a621e20dcb44f871d9ea61e639a4e69dfe31c",
+      "size": 1629
+    },
+    {
+      "path": "simulation_stage_contracts/engines/gromacs/tpr.py",
+      "sha256": "215b985a0b112cf1589b92eb933e47c67ddb57d7af5b471c4b6a6c3190cd1cae",
+      "size": 1222
+    },
+    {
+      "path": "simulation_stage_contracts/errors.py",
+      "sha256": "9b2b583cb72123002ded526de0952ae145b1cd7472baf43712af5d255fefd590",
+      "size": 1494
+    },
+    {
+      "path": "simulation_stage_contracts/evidence/__init__.py",
+      "sha256": "a16530502dc75ce095599fad539fc83a5736ce86d6e56bb38b92f33f96af8e49",
+      "size": 205
+    },
+    {
+      "path": "simulation_stage_contracts/evidence/dag.py",
+      "sha256": "80b5107b42d672cecd8cd12b1df0ff3558b83e62e003738e72b4da00ee5af20d",
+      "size": 3100
+    },
+    {
+      "path": "simulation_stage_contracts/evidence/freshness.py",
+      "sha256": "04e986ab326fe6c5b2aeba4c3cfcfb30c989001844acfd2bb4b6ff0ff135c455",
+      "size": 250
+    },
+    {
+      "path": "simulation_stage_contracts/evidence/index.py",
+      "sha256": "f1b7c2b2aa9aad98e02b1bf21f184827b425897dd23a01e8d233ce8daee90b88",
+      "size": 122
+    },
+    {
+      "path": "simulation_stage_contracts/evidence/ledger.py",
+      "sha256": "89a7d6358f3a38555059d95c3f59ddafc08d91d22276ee552b154abdb77d3d15",
+      "size": 1400
+    },
+    {
+      "path": "simulation_stage_contracts/migrations/__init__.py",
+      "sha256": "1f79107a845a99fbc2fd876d0be427e12dc45079ff161e31b76e6c650baaab71",
+      "size": 306
+    },
+    {
+      "path": "simulation_stage_contracts/migrations/contract_v21.py",
+      "sha256": "70ae02fd625ab5c2b10f19aaf5e2227d545ed94fb8b9b19c245f88e14753339c",
+      "size": 718
+    },
+    {
+      "path": "simulation_stage_contracts/migrations/handoff_v1.py",
+      "sha256": "ee2f8de08656ccbfd0e972a4a6e3d02418c5fb3a01344e69dcdd1d5844c61423",
+      "size": 467
+    },
+    {
+      "path": "simulation_stage_contracts/migrations/md_authorization_v1.py",
+      "sha256": "9b3f7ae417612b14393dab6b19b082880efd83a9858fae5882b662b5d6c3485e",
+      "size": 401
+    },
+    {
+      "path": "simulation_stage_contracts/migrations/receipt_v1.py",
+      "sha256": "bb8e5a901c9be0feb5651c4515c8af7c36aa1321c639833d2c80bd3777de71cc",
+      "size": 366
+    },
+    {
+      "path": "simulation_stage_contracts/receipts/__init__.py",
+      "sha256": "6ef82895e4236afa2b6e1ecd4759fa80957270a9674c4d1f231095495d2aed75",
+      "size": 178
+    },
+    {
+      "path": "simulation_stage_contracts/receipts/audit.py",
+      "sha256": "ad9cc42d5b8096fa0e44907ffdb4c9590b8b521c82f07251fc9d6237264b93e1",
+      "size": 3596
+    },
+    {
+      "path": "simulation_stage_contracts/receipts/chain.py",
+      "sha256": "10d30b69af0def38bb2abb0ec157aae5a8d25513458d71dd086b309e98d24d80",
+      "size": 3037
+    },
+    {
+      "path": "simulation_stage_contracts/receipts/concurrency.py",
+      "sha256": "7be673d61157ee8593b84391bf303ffb663431d094b0e06671f30c04444881f5",
+      "size": 1012
+    },
+    {
+      "path": "simulation_stage_contracts/receipts/lock.py",
+      "sha256": "6870cb94cf89f0379685c6d72c4f93703d47eab90509070d7b8b699eba367336",
+      "size": 4407
+    },
+    {
+      "path": "simulation_stage_contracts/receipts/verify.py",
+      "sha256": "d5b7a10a408e41b8522e28deb0cf9504e829957513c8b4328e359f5694c6c3e9",
+      "size": 2180
+    },
+    {
+      "path": "simulation_stage_contracts/records/__init__.py",
+      "sha256": "ad5f20affc5e3cee52847c1bf3382fa2ca21a67b922c2a362f46455d18142349",
+      "size": 152
+    },
+    {
+      "path": "simulation_stage_contracts/records/reader.py",
+      "sha256": "38c345e34843b16d58b51cd074c40bdb62babdd2e2c646335655fa8c3c6999ac",
+      "size": 658
+    },
+    {
+      "path": "simulation_stage_contracts/records/registry.py",
+      "sha256": "d88a86b3af9ba324bc03638d8cb4245a1428cb396ca439b73bca464db8381f7d",
+      "size": 2893
+    },
+    {
+      "path": "simulation_stage_contracts/records/validation.py",
+      "sha256": "4bc74cb437964628edab8bf98887c0d71013953d9a51b03d987368c77fad2bf3",
+      "size": 955
+    },
+    {
+      "path": "simulation_stage_contracts/segments/__init__.py",
+      "sha256": "84f46107709e5ebc98b387f3e343d08106f35e0bfbb98d3ddf635a68746f5644",
+      "size": 130
+    },
+    {
+      "path": "simulation_stage_contracts/segments/model.py",
+      "sha256": "40bbf01cbf366fa4090e62ec2c4edad3dfb4c4961ca26a979e0427eaeef1f630",
+      "size": 216
+    },
+    {
+      "path": "simulation_stage_contracts/segments/reconcile.py",
+      "sha256": "9f64cdc97598f0e65f5743031cf964196fb3b0b83f32e5604da83f14eb79b85c",
+      "size": 1380
+    },
+    {
+      "path": "simulation_stage_contracts/topology/__init__.py",
+      "sha256": "9d74832af6a3dcb9ef8df05d7096da9e62dc570418d3a3a9a172fbcbca7e2a44",
+      "size": 375
+    },
+    {
+      "path": "simulation_stage_contracts/topology/gromacs.py",
+      "sha256": "d140d0b730ed7838a921eaaa9beadefe90aa1148af2851e013396ac7ace58417",
+      "size": 2112
+    },
+    {
+      "path": "simulation_stage_contracts/topology/parameters.py",
+      "sha256": "8d8af85f23b958a168fb0ccb50270dc237744988489af2f779ae3a2245d1739d",
+      "size": 865
+    },
+    {
+      "path": "simulation_stage_contracts/topology/semantic.py",
+      "sha256": "78120292f5d66daf341f75d90a8f7bba7a8a828e271a32c3f78e12eb609903c2",
+      "size": 1748
+    },
+    {
+      "path": "simulation_stage_contracts/version.py",
+      "sha256": "27e8febb48ada44153ea2add9969a2c50a9831a74d9755fdd53c549a888b1cc2",
+      "size": 22
+    }
+  ],
+  "package_version": "1.0.0",
+  "record_type": "vendor-manifest",
+  "schema_version": "1.0",
+  "source_commit": "UNPUBLISHED_LOCAL",
+  "source_tag": "v1.0.0-local",
+  "tree_sha256": "3153e99a6016278fbfcc13f72217c84459093948da751a0cf6b73c233b8e589f"
+}

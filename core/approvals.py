@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from .canonical import canonical_json
-from .schema import SCHEMA_VERSION, SchemaError, assert_no_secret_fields
+from .schema import APPROVAL_RECORD_SCHEMA_VERSION, SchemaError, assert_no_secret_fields
 
 
 VALID_APPROVAL_ORIGINS = {
@@ -59,7 +59,7 @@ def mint_authorization(
     if max_submissions < 0:
         raise SchemaError("max_submissions cannot be negative")
     authorization = {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": APPROVAL_RECORD_SCHEMA_VERSION,
         "authorization_id": authorization_id,
         "contract_sha256": contract_sha256,
         "allowed_actions": sorted(set(allowed_actions)),

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:simulation-stage-contracts:evidence-index:1.0",
+  "type": "object",
+  "required": ["record_type", "schema_version", "nodes", "root_sha256"],
+  "properties": {
+    "record_type": {"const": "evidence-index"},
+    "schema_version": {"const": "1.0"},
+    "nodes": {"type": "array"},
+    "root_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": false
+}

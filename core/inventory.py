@@ -14,7 +14,12 @@ from .decisions import (
     guided_question,
 )
 from .io import load_structured
-from .schema import SCHEMA_VERSION, SchemaError, assert_no_secret_fields
+from .schema import (
+    DECISION_REGISTER_SCHEMA_VERSION,
+    RULE_PACK_SCHEMA_VERSION,
+    SchemaError,
+    assert_no_secret_fields,
+)
 
 
 MODULE_RULE_PATHS = {
@@ -74,7 +79,7 @@ def load_rules(root: Path, modules: list[str]) -> list[dict[str, Any]]:
     for module in modules:
         path = root / MODULE_RULE_PATHS[module]
         data = load_structured(path)
-        if str(data.get("schema_version", "")) != SCHEMA_VERSION:
+        if str(data.get("schema_version", "")) != RULE_PACK_SCHEMA_VERSION:
             raise SchemaError(f"rule pack {path} does not use schema 2.1")
         rules.extend(data.get("parameters", []))
     return rules
@@ -235,7 +240,7 @@ def build_inventory(
         if decision.parameter_id in pending
     ]
     return {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": DECISION_REGISTER_SCHEMA_VERSION,
         "run_id": run_request.get("run_id", ""),
         "active_modules": active_modules(run_request),
         "decisions": [decision.to_dict() for decision in decisions],

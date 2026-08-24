@@ -3,7 +3,7 @@
 Install a pinned release directly into the Hermes skill root:
 
 ```bash
-git clone --branch v2.1.0 --depth 1 \
+git clone --branch v2.2.0 --depth 1 \
   https://github.com/ChenyanLiao/CHARMM-GUI-System-Builder.git \
   ~/.hermes/skills/charmm-gui-system-builder
 ```
@@ -12,6 +12,8 @@ Then verify discovery and package structure:
 
 ```bash
 hermes skills list
+python3 -m pip install -r \
+  ~/.hermes/skills/charmm-gui-system-builder/requirements.txt
 python3 ~/.hermes/skills/charmm-gui-system-builder/scripts/validate_skill_package.py \
   ~/.hermes/skills/charmm-gui-system-builder --strict-directory-name
 ```

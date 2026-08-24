@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from .io import load_structured
-from .schema import SCHEMA_VERSION, SchemaError, assert_no_secret_fields
+from .schema import CAPABILITY_REGISTRY_SCHEMA_VERSION, SchemaError, assert_no_secret_fields
 
 
 VALID_ROUTES = {"official_api", "audited_browser", "validation_only", "unsupported"}
@@ -62,7 +62,7 @@ class CapabilityRegistry:
     @classmethod
     def from_file(cls, path: Path) -> "CapabilityRegistry":
         data = load_structured(path)
-        if str(data.get("schema_version", "")) != SCHEMA_VERSION:
+        if str(data.get("schema_version", "")) != CAPABILITY_REGISTRY_SCHEMA_VERSION:
             raise SchemaError("capability registry schema_version must be 2.1")
         return cls([Capability.from_dict(item) for item in data["capabilities"]])
 
@@ -74,6 +74,6 @@ class CapabilityRegistry:
 
     def to_dict(self) -> dict[str, Any]:
         return {
-            "schema_version": SCHEMA_VERSION,
+            "schema_version": CAPABILITY_REGISTRY_SCHEMA_VERSION,
             "capabilities": [item.__dict__ for item in self._items.values()],
         }

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:simulation-stage-contracts:receipt-chain-event:1.0",
+  "type": "object",
+  "required": ["record_type", "schema_version", "receipt_id", "receipt_sha256", "pipeline_id", "branch_id", "revision", "previous_event_sha256", "event_sha256"],
+  "properties": {
+    "record_type": {"const": "receipt-chain-event"},
+    "schema_version": {"const": "1.0"},
+    "receipt_id": {"type": "string", "minLength": 1},
+    "receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "pipeline_id": {"type": "string", "minLength": 1},
+    "branch_id": {"type": "string", "minLength": 1},
+    "revision": {"type": "integer", "minimum": 1},
+    "previous_event_sha256": {"oneOf": [{"type": "string", "pattern": "^[0-9a-f]{64}$"}, {"type": "null"}]},
+    "event_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

@@ -5,7 +5,7 @@
 Back up an existing installation before replacing it. For a fresh install:
 
 ```bash
-git clone --branch v2.1.0 --depth 1 \
+git clone --branch v2.2.0 --depth 1 \
   https://github.com/ChenyanLiao/CHARMM-GUI-System-Builder.git \
   ~/.codex/skills/charmm-gui-system-builder
 ```
@@ -14,6 +14,8 @@ The lowercase destination is required by the Agent Skills name rule. Reload
 Codex skill discovery, then verify:
 
 ```bash
+python3 -m pip install -r \
+  ~/.codex/skills/charmm-gui-system-builder/requirements.txt
 python3 ~/.codex/skills/charmm-gui-system-builder/scripts/validate_skill_package.py \
   ~/.codex/skills/charmm-gui-system-builder --strict-directory-name
 ```
