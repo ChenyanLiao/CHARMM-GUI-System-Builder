@@ -14,6 +14,8 @@ The lowercase destination is required by the Agent Skills name rule. Reload
 Codex skill discovery, then verify:
 
 ```bash
+python3 -m pip install -r \
+  ~/.codex/skills/charmm-gui-system-builder/requirements.txt
 python3 ~/.codex/skills/charmm-gui-system-builder/scripts/validate_skill_package.py \
   ~/.codex/skills/charmm-gui-system-builder --strict-directory-name
 ```

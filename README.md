@@ -215,12 +215,15 @@ Restart or reload Codex skill discovery after installation. The entry point is
 
 ## Run The Tests
 
-Python 3.10 or newer is recommended. The test suite uses only the standard
-library.
+Python 3.10 or newer is recommended. v2.2.0 uses PyYAML to read and lock the
+versioned YAML contracts and receipts, and `jsonschema` to validate versioned
+records. Install the declared runtime dependencies before running the
+validators or tests.
 
 ```bash
+python3 -m pip install -r requirements.txt
 python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
-python3 -m compileall -q core scripts
+python3 -m compileall -q core scripts vendor/simulation_stage_contracts/simulation_stage_contracts
 python3 scripts/validate_skill_package.py .
 ```
 

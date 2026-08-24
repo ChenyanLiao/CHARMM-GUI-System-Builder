@@ -19,6 +19,10 @@ openclaw skills info charmm-gui-system-builder
 openclaw skills check
 ```
 
+The v2.2.0 closure commands require the Python packages declared in
+`requirements.txt`. Install them into the Python environment used by the
+OpenClaw terminal tool before running those commands.
+
 OpenClaw skill roots have precedence rules, so remove naming conflicts or
 confirm which copy wins before a scientific run. Read
 [`adapters/openclaw.md`](../adapters/openclaw.md) and treat third-party skills

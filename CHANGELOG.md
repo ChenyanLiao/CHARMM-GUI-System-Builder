@@ -4,6 +4,9 @@
 
 - Vendors `simulation-stage-contracts` v1.0.0 with deterministic integrity
   verification and independent per-record schema versions.
+- Declares PyYAML and `jsonschema` as runtime dependencies for versioned YAML
+  contracts, receipts, and record validation, and installs them explicitly in
+  the CI matrix.
 - Adds approved build contract 2.2 while preserving 2.1 as read-only legacy
   input and preventing dual contract authorities.
 - Adds semantic topology, segment reconciliation, strict `grompp`, TPR

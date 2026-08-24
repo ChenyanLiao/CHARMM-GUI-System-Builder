@@ -12,6 +12,8 @@ Then verify discovery and package structure:
 
 ```bash
 hermes skills list
+python3 -m pip install -r \
+  ~/.hermes/skills/charmm-gui-system-builder/requirements.txt
 python3 ~/.hermes/skills/charmm-gui-system-builder/scripts/validate_skill_package.py \
   ~/.hermes/skills/charmm-gui-system-builder --strict-directory-name
 ```

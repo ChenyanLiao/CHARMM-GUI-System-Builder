@@ -16,6 +16,8 @@ exist when the session began.
 Verify the installed copy:
 
 ```bash
+python3 -m pip install -r \
+  ~/.claude/skills/charmm-gui-system-builder/requirements.txt
 python3 ~/.claude/skills/charmm-gui-system-builder/scripts/validate_skill_package.py \
   ~/.claude/skills/charmm-gui-system-builder --strict-directory-name
 ```
